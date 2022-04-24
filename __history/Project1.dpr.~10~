@@ -1,0 +1,19 @@
+program Project1;
+
+uses
+  System.StartUpCopy,
+  FMX.Forms,
+  UnitLogin in 'UnitLogin.pas' {FrmLogin},
+  UnitPrincipal in 'UnitPrincipal.pas' {FrmPrincipal},
+  UnitCatalogo in 'UnitCatalogo.pas' {FrmCatalogo},
+  FrmProdutoCard in 'Frames\FrmProdutoCard.pas' {FrmProdutCard: TFrame};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TFrmCatalogo, FrmCatalogo);
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.CreateForm(TFrmLogin, FrmLogin);
+  Application.Run;
+end.

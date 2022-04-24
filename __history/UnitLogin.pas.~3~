@@ -1,0 +1,28 @@
+unit UnitLogin;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.TabControl;
+
+type
+  TFrmLogin = class(TForm)
+    TabControl: TTabControl;
+    TabLogin: TTabItem;
+    TabConta1: TTabItem;
+    TabConta2: TTabItem;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmLogin: TFrmLogin;
+
+implementation
+
+{$R *.fmx}
+
+end.
