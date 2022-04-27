@@ -288,6 +288,23 @@
             <Form>FrmSplash</Form>
             <FormType>fmx</FormType>
         </DCCReference>
+        <DCCReference Include="UnitCarrinho.pas">
+            <Form>FrmCarrinho</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="Frames\Frame.ProdutoLista.pas">
+            <Form>FrameProdutLista</Form>
+            <FormType>fmx</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="UnitPedido.pas">
+            <Form>FrmPedido</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
+        <DCCReference Include="UnitPedidoDetalhe.pas">
+            <Form>FrmPedidoDetalhe</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

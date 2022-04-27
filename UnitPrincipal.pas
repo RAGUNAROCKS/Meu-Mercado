@@ -12,8 +12,8 @@ uses
 type
   TFrmPrincipal = class(TForm)
     LytToolbar: TLayout;
-    Image1: TImage;
-    Image2: TImage;
+    ImgMenu: TImage;
+    imgCarrinho: TImage;
     Label1: TLabel;
     LytPesquisa: TLayout;
     StyleBook: TStyleBook;
@@ -31,15 +31,31 @@ type
     ImgTaxa: TImage;
     ImgPreco: TImage;
     AnimeRect: TFloatAnimation;
+    RectMenu: TRectangle;
+    Image2: TImage;
+    ImgFecharMenu: TImage;
+    LblEndereco: TLabel;
+    Label2: TLabel;
+    Rectangle2: TRectangle;
+    Label3: TLabel;
+    RectMenuPedido: TRectangle;
+    Label4: TLabel;
+    Rectangle3: TRectangle;
+    Label5: TLabel;
     procedure FormShow(Sender: TObject);
     procedure LvMercadoItemClick(const Sender: TObject;
       const AItem: TListViewItem);
     procedure LblCasaClick(Sender: TObject);
+    procedure imgCarrinhoClick(Sender: TObject);
+    procedure ImgMenuClick(Sender: TObject);
+    procedure ImgFecharMenuClick(Sender: TObject);
+    procedure RectMenuPedidoClick(Sender: TObject);
   private
     procedure AddMercadoLv(id_mercado: integer; nome, endereco: string; taxa,
       preco: double);
     procedure ListarMercados;
     procedure SelecionarEntrega(lbl: Tlabel);
+    procedure OpenMenu(ind: boolean);
     { Private declarations }
   public
     { Public declarations }
@@ -52,7 +68,7 @@ implementation
 
 {$R *.fmx}
 
-uses UnitCatalogo;
+uses UnitCatalogo, UnitCarrinho, UnitPedido;
 
 procedure TFrmPrincipal.AddMercadoLv(id_mercado: integer;
                                      nome, endereco: string;
@@ -106,6 +122,20 @@ begin
      AddMercadoLv(1,'Pao de Açucar', 'Av. Paulista, 1500', 10, 50);
 end;
 
+procedure TFrmPrincipal.OpenMenu(ind: boolean);
+begin
+  rectMenu.Visible := ind;
+end;
+
+procedure TFrmPrincipal.RectMenuPedidoClick(Sender: TObject);
+begin
+  if NOT assigned(FrmPedido) then
+    application.CreateForm(TFrmPedido,FrmPedido);
+
+    OpenMenu(false);
+    FrmPedido.show;
+end;
+
 procedure TFrmPrincipal.LvMercadoItemClick(const Sender: TObject;
   const AItem: TListViewItem);
 begin
@@ -117,6 +147,24 @@ end;
 procedure TFrmPrincipal.FormShow(Sender: TObject);
 begin
       ListarMercados;
+end;
+
+procedure TFrmPrincipal.imgCarrinhoClick(Sender: TObject);
+begin
+  if NOT Assigned(FrmCarrinho) then
+      Application.CreateForm(TFrmCarrinho, FrmCarrinho);
+
+      FrmCarrinho.Show;
+end;
+
+procedure TFrmPrincipal.ImgFecharMenuClick(Sender: TObject);
+begin
+    OpenMenu(false);
+end;
+
+procedure TFrmPrincipal.ImgMenuClick(Sender: TObject);
+begin
+    OpenMenu(true);
 end;
 
 end.
