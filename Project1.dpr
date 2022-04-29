@@ -11,7 +11,8 @@ uses
   UnitCarrinho in 'UnitCarrinho.pas' {FrmCarrinho},
   Frame.ProdutoLista in 'Frames\Frame.ProdutoLista.pas' {FrameProdutLista: TFrame},
   UnitPedido in 'UnitPedido.pas' {FrmPedido},
-  UnitPedidoDetalhe in 'UnitPedidoDetalhe.pas' {FrmPedidoDetalhe};
+  UnitPedidoDetalhe in 'UnitPedidoDetalhe.pas' {FrmPedidoDetalhe},
+  UnitProduto in 'UnitProduto.pas' {FrmProduto};
 
 {$R *.res}
 
@@ -24,5 +25,6 @@ begin
   Application.CreateForm(TFrmCarrinho, FrmCarrinho);
   Application.CreateForm(TFrmPedido, FrmPedido);
   Application.CreateForm(TFrmPedidoDetalhe, FrmPedidoDetalhe);
+  Application.CreateForm(TFrmProduto, FrmProduto);
   Application.Run;
 end.
