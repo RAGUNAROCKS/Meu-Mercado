@@ -1,55 +1,20 @@
 import express from 'express';
 import cors from 'cors';
-import mysql from 'mysql';
+import controllerUsuarios from './controllers/controller.usuarios.js';
+import controllerMercados from './controllers/controller.mercados.js';
+import controllerProdutos from './controllers/controller.produtos.js';
+import controllerPedidos from './controllers/controller.pedidos.js';
 
 const app = express();
-
+//Middleware JSON
 app.use(express.json());
+//Middleware CORS
 app.use(cors());
-
-const db = mysql.createPool({
-    host:"localhost",
-    user:"root",
-    password:"654321",
-    database: "meu_mercado"
-})
-
-app.get("/usuarios", function(request, response){
-    let ssql = "select * from usuario"
-    db.query(ssql, function(err, result){
-        if(err){
-            return response.status(500).send(err);
-        }else{
-            return response.status(200).json(result);
-        }
-    });
-});
-
-app.get("/usuarios/:id", function(request, response){
-    let ssql = "select * from usuario where id_usuario = ?"
-    db.query(ssql, [request.params.id], function(err, result){
-        if(err){
-            return response.status(500).send(err);
-        }else{
-            return response.status(result.length > 0 ? 200 : 404).json(result[0]);
-        }
-    });
-});
-
-app.post("/usuarios/login", function(request, response){
-    const body = request.body;
-    let ssql = "select id_usuario, nome, email, endereco, bairro, cidade, uf, cep, ";
-    ssql += " date_format(dt_cadastro, '%d/%m/%y %H:%i:%s') as dt_cadastro"
-    ssql += " from usuario where email=? and senha=?";
-    db.query(ssql, [body.email, body.senha], function(err, result){
-        if(err){
-            return response.status(500).send(err);
-        }else{
-            return response.status(result.length > 0 ? 200 : 401).json(result[0]);
-        }
-    });
-});
-
+//Controladores
+app.use(controllerUsuarios);
+app.use(controllerMercados);
+app.use(controllerProdutos);
+app.use(controllerPedidos);
 
 app.listen(3000, function(){
     console.log('Servidor no ar...');
