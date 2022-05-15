@@ -69,7 +69,6 @@ object FrmLogin: TFrmLogin
           StyleLookup = 'btnGreen'
           TabOrder = 1
           Text = 'Acessar'
-          OnClick = BtnLoginClick
         end
         object Rectangle1: TRectangle
           Align = Top
@@ -82,7 +81,7 @@ object FrmLogin: TFrmLogin
           Stroke.Color = xFF8F8F8F
           XRadius = 6.000000000000000000
           YRadius = 6.000000000000000000
-          object EdtEmail: TEdit
+          object Edit1: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Top
             StyleLookup = 'EditTransparent'
@@ -112,7 +111,7 @@ object FrmLogin: TFrmLogin
           Stroke.Color = xFF8F8F8F
           XRadius = 6.000000000000000000
           YRadius = 6.000000000000000000
-          object EdtSenha: TEdit
+          object Edit2: TEdit
             Touch.InteractiveGestures = [LongTap, DoubleTap]
             Align = Top
             StyleLookup = 'EditTransparent'
@@ -700,7 +699,7 @@ object FrmLogin: TFrmLogin
           Text = 'Criar nova conta.'
           TabOrder = 1
         end
-        object BtnProx: TButton
+        object Button2: TButton
           Align = Top
           Cursor = crHandPoint
           Margins.Top = 15.000000000000000000
@@ -1104,7 +1103,7 @@ object FrmLogin: TFrmLogin
           Text = 'Criar nova conta.'
           TabOrder = 1
         end
-        object BtnCriarConta: TButton
+        object Button3: TButton
           Align = Top
           Cursor = crHandPoint
           Margins.Top = 15.000000000000000000

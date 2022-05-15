@@ -8,7 +8,11 @@ uses
   UnitCatalogo in 'UnitCatalogo.pas' {FrmCatalogo},
   Frame.ProdutoCard in 'Frames\Frame.ProdutoCard.pas' {FrameProdutCard: TFrame},
   UnitSplash in 'UnitSplash.pas' {FrmSplash},
-  UnitCarrinho in 'UnitCarrinho.pas' {Form1};
+  UnitCarrinho in 'UnitCarrinho.pas' {FrmCarrinho},
+  Frame.ProdutoLista in 'Frames\Frame.ProdutoLista.pas' {FrameProdutLista: TFrame},
+  UnitPedido in 'UnitPedido.pas' {FrmPedido},
+  UnitPedidoDetalhe in 'UnitPedidoDetalhe.pas' {FrmPedidoDetalhe},
+  UnitProduto in 'UnitProduto.pas' {FrmProduto};
 
 {$R *.res}
 
@@ -18,6 +22,9 @@ begin
   Application.CreateForm(TFrmCatalogo, FrmCatalogo);
   Application.CreateForm(TFrmLogin, FrmLogin);
   Application.CreateForm(TFrmSplash, FrmSplash);
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFrmCarrinho, FrmCarrinho);
+  Application.CreateForm(TFrmPedido, FrmPedido);
+  Application.CreateForm(TFrmPedidoDetalhe, FrmPedidoDetalhe);
+  Application.CreateForm(TFrmProduto, FrmProduto);
   Application.Run;
 end.

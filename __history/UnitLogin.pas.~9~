@@ -44,6 +44,14 @@ type
     StyleBook: TStyleBook;
     Rectangle1: TRectangle;
     Rectangle2: TRectangle;
+    Rectangle3: TRectangle;
+    Rectangle4: TRectangle;
+    Rectangle5: TRectangle;
+    Rectangle6: TRectangle;
+    Rectangle7: TRectangle;
+    Rectangle8: TRectangle;
+    Rectangle9: TRectangle;
+    Rectangle10: TRectangle;
   private
     { Private declarations }
   public

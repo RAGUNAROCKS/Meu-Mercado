@@ -19,7 +19,14 @@ uses
 
 begin
   Application.Initialize;
+  Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+  Application.CreateForm(TFrmCatalogo, FrmCatalogo);
   Application.CreateForm(TFrmLogin, FrmLogin);
+  Application.CreateForm(TFrmSplash, FrmSplash);
+  Application.CreateForm(TFrmCarrinho, FrmCarrinho);
+  Application.CreateForm(TFrmPedido, FrmPedido);
+  Application.CreateForm(TFrmPedidoDetalhe, FrmPedidoDetalhe);
+  Application.CreateForm(TFrmProduto, FrmProduto);
   Application.CreateForm(TDmUsuario, DmUsuario);
   Application.Run;
 end.

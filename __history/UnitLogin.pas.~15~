@@ -16,7 +16,7 @@ type
     Label1: TLabel;
     Edit1: TEdit;
     Edit2: TEdit;
-    Button1: TButton;
+    BtnLogin: TButton;
     TabConta1: TTabItem;
     TabConta2: TTabItem;
     Label2: TLabel;
@@ -42,7 +42,19 @@ type
     Edit10: TEdit;
     Layout2: TLayout;
     StyleBook: TStyleBook;
+    Rectangle1: TRectangle;
+    Rectangle2: TRectangle;
+    Rectangle3: TRectangle;
+    Rectangle4: TRectangle;
+    Rectangle5: TRectangle;
+    Rectangle6: TRectangle;
+    Rectangle7: TRectangle;
+    Rectangle8: TRectangle;
+    Rectangle9: TRectangle;
+    Rectangle10: TRectangle;
+    procedure BtnLoginClick(Sender: TObject);
   private
+    procedure ThreadLoginTerminate(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -54,5 +66,37 @@ var
 implementation
 
 {$R *.fmx}
+
+uses DataModule.Usuario, UnitPrincipal;
+
+procedure TFrmLogin.ThreadLoginTerminate(Sender: TObject);
+begin
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   //Abrir o Unit Principal
+   if NOT Assigned(FrmPrincipal) then
+    Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+    FrmPrincipal.Show;
+end;
+
+procedure TFrmLogin.BtnLoginClick(Sender: TObject);
+var
+  t : TThread;
+begin
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+
+  end);
+
+  t.OnTerminate := ThreadLoginTerminate;
+  t.Start;
+end;
 
 end.
