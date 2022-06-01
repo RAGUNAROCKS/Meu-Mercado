@@ -14,8 +14,7 @@ uses
   UnitPedidoDetalhe in 'UnitPedidoDetalhe.pas' {FrmPedidoDetalhe},
   UnitProduto in 'UnitProduto.pas' {FrmProduto},
   DataModule.Usuario in 'DataModule\DataModule.Usuario.pas' {DmUsuario: TDataModule},
-  uLoading in 'Units\uLoading.pas',
-  DataModule.Mercado in 'DataModule\DataModule.Mercado.pas' {DmMercado: TDataModule};
+  uLoading in 'Units\uLoading.pas';
 
 {$R *.res}
 
@@ -23,6 +22,5 @@ begin
   Application.Initialize;
   Application.CreateForm(TFrmLogin, FrmLogin);
   Application.CreateForm(TDmUsuario, DmUsuario);
-  Application.CreateForm(TDmMercado, DmMercado);
   Application.Run;
 end.

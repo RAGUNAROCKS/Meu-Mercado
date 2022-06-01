@@ -8,8 +8,8 @@ controllerMercados.get("/mercados", function(request, response){
     let ssql = "select * from mercado where id_mercado > 0";
 
     if(request.query.busca){
-        ssql += " and nome = ?";
-        filtro.push(request.query.busca);
+        ssql += " and nome like ?";
+        filtro.push('%'+request.query.busca+'%');
     }
     if(request.query.ind_entrega){
         ssql += " and ind_entrega = ?";

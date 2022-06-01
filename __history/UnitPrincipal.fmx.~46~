@@ -234,7 +234,7 @@ object FrmPrincipal: TFrmPrincipal
       Stroke.Color = xFF8F8F8F
       XRadius = 5.000000000000000000
       YRadius = 5.000000000000000000
-      object EdtBusca: TEdit
+      object Edit1: TEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
         Align = Client
         StyleLookup = 'EditTransparent'
@@ -342,7 +342,7 @@ object FrmPrincipal: TFrmPrincipal
         Size.Height = 30.000000000000000000
         Size.PlatformDefault = False
       end
-      object BtnBusca: TButton
+      object Button1: TButton
         Align = Right
         Cursor = crHandPoint
         StyledSettings = [Family, Style, FontColor]
@@ -354,7 +354,6 @@ object FrmPrincipal: TFrmPrincipal
         TabOrder = 1
         Text = 'Buscar'
         TextSettings.Font.Size = 14.000000000000000000
-        OnClick = BtnBuscaClick
       end
     end
   end
@@ -1451,7 +1450,6 @@ object FrmPrincipal: TFrmPrincipal
         end
       end
       object LblLoja: TLabel
-        Tag = 1
         Align = Scale
         StyledSettings = [Family, Style]
         HitTest = True

@@ -20,7 +20,7 @@ type
     RectPesquisa: TRectangle;
     EdtBusca: TEdit;
     Image3: TImage;
-    BtnBusca: TButton;
+    Button1: TButton;
     LytSwitch: TLayout;
     RectSwitch: TRectangle;
     RectSwitchGrn: TRectangle;
@@ -50,7 +50,6 @@ type
     procedure ImgMenuClick(Sender: TObject);
     procedure ImgFecharMenuClick(Sender: TObject);
     procedure RectMenuPedidoClick(Sender: TObject);
-    procedure BtnBuscaClick(Sender: TObject);
   private
     FInd_Retira: string;
     FInd_Entrega: string;
@@ -116,13 +115,13 @@ begin
     if lbl.Tag = 0 then
     begin
       Ind_Entrega := 'S';
+      Ind_Retira := 'N';
     end
     else
     begin
+      Ind_Entrega := 'N';
       Ind_Retira := 'S';
     end;
-
-    ListarMercados;
 
     AnimeRect.StopValue := lbl.Position.x;
     AnimeRect.Start;
@@ -144,7 +143,6 @@ begin
   var
   i : integer;
   begin
-     sleep(1500);
      DmMercado.ListarMercado(EdtBusca.Text, Ind_Entrega, Ind_Retira);
 
      with DmMercado.TabMercado do
@@ -191,14 +189,10 @@ begin
       FrmCatalogo.Show;
 end;
 
-procedure TFrmPrincipal.BtnBuscaClick(Sender: TObject);
-begin
-  ListarMercados;
-end;
-
 procedure TFrmPrincipal.FormShow(Sender: TObject);
 begin
       SelecionarEntrega(lblCasa);
+      ListarMercados;
 end;
 
 procedure TFrmPrincipal.imgCarrinhoClick(Sender: TObject);
