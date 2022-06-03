@@ -188,8 +188,7 @@ procedure TFrmPrincipal.LvMercadoItemClick(const Sender: TObject;
 begin
     if NOT Assigned(FrmCatalogo) then
       Application.CreateForm(TFrmCatalogo, FrmCatalogo);
-    FrmCatalogo.id_mercado := AItem.Tag;
-    FrmCatalogo.Show;
+      FrmCatalogo.Show;
 end;
 
 procedure TFrmPrincipal.BtnBuscaClick(Sender: TObject);

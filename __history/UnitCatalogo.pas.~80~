@@ -97,7 +97,6 @@ begin
 
     t := TThread.CreateAnonymousThread(procedure
     begin
-      sleep(1500);
       DmMercado.ListarProduto(Id_mercado, id_categoria);
       with DmMercado.TabProduto do
        begin
@@ -123,7 +122,6 @@ procedure TFrmCatalogo.LtbCategoriaItemClick(const Sender: TCustomListBox;
   const Item: TListBoxItem);
 begin
     SelecionarCategoria(Item);
-    ListarProdutos(LtbCategoria.Tag);
 end;
 
 procedure TFrmCatalogo.LtbProdutosItemClick(const Sender: TCustomListBox;

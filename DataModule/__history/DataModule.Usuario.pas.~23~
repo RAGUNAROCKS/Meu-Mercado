@@ -46,12 +46,12 @@ begin
      json.AddPair('email', email);
      json.AddPair('senha', senha);
 
-     resp := TRequest.New.BaseURL(BASE_URL)
+     resp := TRequest.New.BaseURL('http://localhost:3000')
              .Resource('usuarios/login')
              .DataSetAdapter(TabUsuario)
              .AddBody(json.ToJSON)
              .Accept('application/json')
-             .BasicAuthentication(USER_NAME, PASSWORD).Post;
+             .BasicAuthentication('99coders', '123456').Post;
 
      if (resp.StatusCode = 401) then
       raise Exception.Create('Email ou senha inválida!')
