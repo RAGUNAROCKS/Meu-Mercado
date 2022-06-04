@@ -16,7 +16,8 @@ uses
   DataModule.Usuario in 'DataModule\DataModule.Usuario.pas' {DmUsuario: TDataModule},
   uLoading in 'Units\uLoading.pas',
   DataModule.Mercado in 'DataModule\DataModule.Mercado.pas' {DmMercado: TDataModule},
-  uConsts in 'Units\uConsts.pas';
+  uConsts in 'Units\uConsts.pas',
+  uFunctions in 'Units\uFunctions.pas';
 
 {$R *.res}
 

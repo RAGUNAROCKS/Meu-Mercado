@@ -16,14 +16,13 @@ type
     TabProdDetalhe: TFDMemTable;
     procedure DataModuleCreate(Sender: TObject);
   private
-    procedure ListarProdutoId(id_produto: integer);
-
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
     procedure ListarMercadoId(id_mercado: integer);
     procedure ListarCategoria(id_mercado: integer);
     procedure ListarProduto(id_mercado, id_categoria : integer; busca : string);
+    procedure ListarProdutoId(id_produto: integer);
     { Public declarations }
   end;
 

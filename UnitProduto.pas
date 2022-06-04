@@ -5,7 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, uLoading, uFunctions;
 
 type
   TFrmProduto = class(TForm)
@@ -27,8 +27,15 @@ type
     BtnAdicionar: TButton;
     LytFundo: TLayout;
     procedure FormResize(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ImgVoltarClick(Sender: TObject);
+    procedure ImgMenosClick(Sender: TObject);
   private
     FId_Produto: integer;
+    procedure CarregarDados;
+    procedure ThreadDadosTerminate(Sender: TObject);
+    procedure Opacity(op: integer);
+    procedure Qtd(valor: integer);
     { Private declarations }
   public
     property Id_produto: integer read FId_Produto write FId_Produto;
@@ -42,7 +49,22 @@ implementation
 
 {$R *.fmx}
 
-uses UnitPrincipal;
+uses UnitPrincipal, DataModule.Mercado;
+
+procedure TFrmProduto.Qtd(valor: integer);
+begin
+   try
+      if valor = 0 then
+        LblQtd.Tag := 1
+      else
+        LblQtd.Tag := LblQtd.Tag + valor;
+      if LblQtd.Tag <= 0 then LblQtd.Tag := 1;
+   except
+      lblQtd.Tag := 1;
+   end;
+
+   LblQtd.Text := FormatFloat('00', LblQtd.Tag);
+end;
 
 procedure TFrmProduto.FormResize(Sender: TObject);
 begin
@@ -56,6 +78,78 @@ begin
       LytFundo.Align := TAlignLayout.Client;
       BtnAdicionar.Align := TAlignLayout.Client;
     end
+end;
+
+procedure TFrmProduto.Opacity(op : integer);
+begin
+  ImgFoto.Opacity := op;
+  LblNome.Opacity := op;
+  LblUnidade.Opacity := op;
+  LblValor.Opacity := op;
+  LblDescricao.Opacity := op;
+end;
+
+procedure TFrmProduto.CarregarDados;
+var
+  t : TThread;
+begin
+  Qtd(0);
+  Opacity(0);
+  TLoading.Show(FrmProduto, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     sleep(2000);
+
+     //Listar dados do produto...
+     DmMercado.ListarProdutoId(Id_produto);
+
+     with DmMercado.TabProdDetalhe do
+     begin
+        TThread.Synchronize(TThread.CurrentThread, procedure
+        begin
+           LblNome.Text := fieldbyname('nome').asstring;
+           LblUnidade.Text := fieldbyname('unidade').asstring;
+           LblValor.Text := FormatFloat('R$#,##0.00', fieldbyname('preco').asfloat);
+           LblDescricao.Text := fieldbyname('descricao').asstring;
+
+           LoadImageFromURL(ImgFoto.Bitmap, fieldbyname('url_foto').asstring);
+        end);
+     end;
+  end);
+
+  t.OnTerminate := ThreadDadosTerminate;
+  t.Start;
+end;
+
+procedure TFrmProduto.FormShow(Sender: TObject);
+begin
+    CarregarDados;
+end;
+
+procedure TFrmProduto.ImgMenosClick(Sender: TObject);
+begin
+  Qtd(TImage(Sender).Tag);
+end;
+
+procedure TFrmProduto.ImgVoltarClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TFrmProduto.ThreadDadosTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   Opacity(1);
 end;
 
 end.

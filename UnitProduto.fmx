@@ -1,7 +1,7 @@
 ﻿object FrmProduto: TFrmProduto
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  Caption = 'Detalhes do Produto'
   ClientHeight = 500
   ClientWidth = 300
   Fill.Kind = Solid
@@ -10,6 +10,7 @@
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnResize = FormResize
+  OnShow = FormShow
   DesignerMasterStyle = 0
   object LytToolbar: TLayout
     Align = Top
@@ -220,6 +221,7 @@
       Size.Width = 40.000000000000000000
       Size.Height = 50.000000000000000000
       Size.PlatformDefault = False
+      OnClick = ImgVoltarClick
     end
   end
   object RectRodapé: TRectangle
@@ -238,6 +240,7 @@
       Size.PlatformDefault = False
       TabOrder = 2
       object ImgMais: TImage
+        Tag = 1
         MultiResBitmap.Height = 128
         MultiResBitmap.Width = 128
         MultiResBitmap = <
@@ -358,8 +361,10 @@
         Size.Width = 40.000000000000000000
         Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
+        OnClick = ImgMenosClick
       end
       object ImgMenos: TImage
+        Tag = -1
         MultiResBitmap.Height = 128
         MultiResBitmap.Width = 128
         MultiResBitmap = <
@@ -477,6 +482,7 @@
         Size.Width = 40.000000000000000000
         Size.Height = 50.000000000000000000
         Size.PlatformDefault = False
+        OnClick = ImgMenosClick
       end
       object LblQtd: TLabel
         Align = Client
