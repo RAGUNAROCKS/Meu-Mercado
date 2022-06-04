@@ -116,7 +116,6 @@ begin
   TLoading.Show(FrmLogin, '');
   t := TThread.CreateAnonymousThread(procedure
   begin
-     sleep(1500);
      DmUsuario.CriarConta(EdtNomeCad.Text, EdtEmailCad.Text, EdtSenhaCad.Text,
                           EdtEnderecoCad.Text, EdtBairroCad.Text, EdtCidadeCad.Text,
                           EdtUFCad.Text, EdtCepCad.Text);
@@ -138,7 +137,6 @@ begin
   TLoading.Show(FrmLogin, '');
   t := TThread.CreateAnonymousThread(procedure
   begin
-     sleep(1500);
      DmUsuario.Login(edtEmail.Text, edtSenha.Text);
 
      if DmUsuario.TabUsuario.RecordCount > 0 then

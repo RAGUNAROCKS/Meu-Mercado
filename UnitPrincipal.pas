@@ -144,7 +144,6 @@ begin
   var
   i : integer;
   begin
-     sleep(1500);
      DmMercado.ListarMercado(EdtBusca.Text, Ind_Entrega, Ind_Retira);
 
      with DmMercado.TabMercado do

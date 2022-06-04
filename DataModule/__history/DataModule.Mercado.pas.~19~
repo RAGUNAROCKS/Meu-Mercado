@@ -13,7 +13,6 @@ type
     TabMercado: TFDMemTable;
     TabCategoria: TFDMemTable;
     TabProduto: TFDMemTable;
-    TabProdDetalhe: TFDMemTable;
     procedure DataModuleCreate(Sender: TObject);
   private
     procedure ListarProdutoId(id_produto: integer);
@@ -121,7 +120,7 @@ begin
      resp := TRequest.New.BaseURL(BASE_URL)
              .Resource('produtos')
              .ResourceSuffix(id_produto.ToString)
-             .DataSetAdapter(TabProdDetalhe)
+             .DataSetAdapter(TabProduto)
              .Accept('application/json')
              .BasicAuthentication(USER_NAME, PASSWORD).Get;
 

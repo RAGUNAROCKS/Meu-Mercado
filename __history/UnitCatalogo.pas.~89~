@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Edit, FMX.ListBox,
-  uLoading;
+  uLoading, System.Net.HttpClientComponent, System.Net.HttpClient;
 
 type
   TFrmCatalogo = class(TForm)
@@ -40,14 +40,18 @@ type
       const Item: TListBoxItem);
   private
     FId_Mercado: integer;
-    procedure AddProduto(id_produto: integer; descricao, unidade: string;
-      valor: double);
-    procedure ListarProdutos(id_categoria: integer);
+    procedure AddProduto(id_produto: integer;
+                         descricao, unidade, url_foto: string;
+                         valor: double);
+    procedure ListarProdutos(id_categoria: integer; busca: string);
     procedure ListarCategorias;
     procedure AddCategoria(id_categoria: integer; descricao: string);
     procedure SelecionarCategoria(item: TListBoxItem);
     procedure CarregarDados;
     procedure ThreadDadosTerminate(Sender: TObject);
+    procedure ThreadProdutosTerminate(Sender: TObject);
+    procedure DownloadFoto(lb: TListBox);
+    procedure LoadImageFromURL(img: TBitmap; url: string);
     { Private declarations }
   public
     property Id_mercado: integer read FId_Mercado write FId_Mercado;
@@ -63,9 +67,42 @@ implementation
 
 uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado;
 
+procedure TFrmCatalogo.DownloadFoto(lb: TListBox);
+var
+    t: TThread;
+    foto: TBitmap;
+    frame: TFrameProdutCard;
+begin
+    // Carregar imagens...
+    t := TThread.CreateAnonymousThread(procedure
+    var
+        i : integer;
+    begin
+
+        for i := 0 to lb.Items.Count - 1 do
+        begin
+            sleep(1000);
+            frame := TFrameProdutCard(lb.ItemByIndex(i).Components[0]);
+
+
+            if frame.ImgProduto.TagString <> '' then
+            begin
+                foto := TBitmap.Create;
+                LoadImageFromURL(foto, frame.ImgProduto.TagString);
+
+                frame.ImgProduto.TagString := '';
+                frame.ImgProduto.bitmap := foto;
+            end;
+        end;
+
+    end);
+
+    t.Start;
+end;
+
 procedure TFrmCatalogo.AddProduto(id_produto: integer;
-                                 descricao, unidade: string;
-                                 valor: double);
+                                  descricao, unidade, url_foto: string;
+                                  valor: double);
 var
     item: TListBoxItem;
     frame: TFrameProdutCard;
@@ -81,40 +118,50 @@ begin
     frame.LblDescricao.Text := descricao;
     frame.LblPreco.Text := FormatFloat('R$ #,##0.00', valor);
     frame.LblUnidade.Text := unidade;
+    frame.ImgProduto.TagString := url_foto;
 
     item.AddObject(frame);
 
     LtbProdutos.AddObject(item);
 end;
 
-procedure TFrmCatalogo.ListarProdutos(id_categoria: integer);
+procedure TFrmCatalogo.ListarProdutos(id_categoria: integer; busca: string);
+var
+  t : TThread;
 begin
-    DmMercado.ListarProduto(Id_mercado, id_categoria);
-    with DmMercado.TabProduto do
-     begin
-      while NOT Eof do
-      begin
-        TThread.Synchronize(TThread.CurrentThread, procedure
-        begin
-          AddProduto(fieldbyname('id_produto').asinteger,
-                     fieldbyname('nome').asstring,
-                     fieldbyname('unidade').asstring,
-                     fieldbyname('preco').asfloat);
-        end);
+    LtbProdutos.Items.Clear;
+    Tloading.Show(FrmCatalogo, '');
 
-        Next;
-      end;
-     end;
-    AddProduto(1,'Café Pilão Torrado E Moído','500g',15);
-    AddProduto(1,'Café Pilão Torrado E Moído','500g',15);
-    AddProduto(1,'Café Pilão Torrado E Moído','500g',15);
-    AddProduto(1,'Café Pilão Torrado E Moído','500g',15);
+    t := TThread.CreateAnonymousThread(procedure
+    begin
+      sleep(1500);
+      DmMercado.ListarProduto(Id_mercado, id_categoria, busca);
+      with DmMercado.TabProduto do
+       begin
+        while NOT Eof do
+        begin
+          TThread.Synchronize(TThread.CurrentThread, procedure
+          begin
+            AddProduto(fieldbyname('id_produto').asinteger,
+                       fieldbyname('nome').asstring,
+                       fieldbyname('unidade').asstring,
+                       fieldbyname('url_foto').asstring,
+                       fieldbyname('preco').asfloat);
+          end);
+
+          Next;
+        end;
+       end;
+    end);
+    t.OnTerminate := ThreadProdutosTerminate;
+    t.Start;
 end;
 
 procedure TFrmCatalogo.LtbCategoriaItemClick(const Sender: TCustomListBox;
   const Item: TListBoxItem);
 begin
     SelecionarCategoria(Item);
+    ListarProdutos(LtbCategoria.Tag, EdtBusca.Text);
 end;
 
 procedure TFrmCatalogo.LtbProdutosItemClick(const Sender: TCustomListBox;
@@ -217,7 +264,7 @@ begin
      end;
 
      if LtbCategoria.Items.Count > 0 then
-         TThread.Synchronize(TThread.CurrentThread, procedure
+      TThread.Synchronize(TThread.CurrentThread, procedure
         begin
           SelecionarCategoria(LtbCategoria.ItemByIndex(0));
         end);
@@ -226,7 +273,6 @@ end;
 procedure TFrmCatalogo.FormShow(Sender: TObject);
 begin
    CarregarDados;
-   ListarProdutos;
 end;
 
 procedure TFrmCatalogo.CarregarDados;
@@ -235,11 +281,10 @@ var
 begin
   TLoading.Show(FrmCatalogo, '');
   LtbCategoria.Items.Clear;
+  LtbProdutos.Items.Clear;
   LblTitulo.Opacity := 0;
   LtyEndereco.Opacity := 0;
   t := TThread.CreateAnonymousThread(procedure
-  var
-  i : integer;
   begin
      sleep(1500);
      //Listar dados do mercado...
@@ -278,6 +323,53 @@ begin
       exit;
      end;
    end;
+
+   ListarProdutos(LtbCategoria.Tag, EdtBusca.Text);
+end;
+
+procedure TFrmCatalogo.ThreadProdutosTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   DownloadFoto(ltbProdutos);
+end;
+
+procedure TFrmCatalogo.LoadImageFromURL(img: TBitmap; url: string);
+var
+    http : TNetHTTPClient;
+    vStream : TMemoryStream;
+begin
+    try
+        try
+            http := TNetHTTPClient.Create(nil);
+            vStream :=  TMemoryStream.Create;
+
+            if (Pos('https', LowerCase(url)) > 0) then
+                  HTTP.SecureProtocols  := [THTTPSecureProtocol.TLS1,
+                                            THTTPSecureProtocol.TLS11,
+                                            THTTPSecureProtocol.TLS12];
+
+            http.Get(url, vStream);
+            vStream.Position  :=  0;
+
+
+            img.LoadFromStream(vStream);
+        except
+        end;
+
+    finally
+        vStream.DisposeOf;
+        http.DisposeOf;
+    end;
 end;
 
 end.

@@ -20,27 +20,27 @@ type
     BtnLogin: TButton;
     TabConta1: TTabItem;
     TabConta2: TTabItem;
-    Label2: TLabel;
+    LblCadConta: TLabel;
     Label3: TLabel;
-    Edit3: TEdit;
-    Edit4: TEdit;
+    EdtEmailCad: TEdit;
+    EdtSenhaCad: TEdit;
     BtnProx: TButton;
     Image2: TImage;
-    Label4: TLabel;
+    LblLogin1: TLabel;
     Label5: TLabel;
-    Edit5: TEdit;
+    EdtNomeCad: TEdit;
     Image3: TImage;
     Layout3: TLayout;
     Label6: TLabel;
-    Edit6: TEdit;
-    Edit7: TEdit;
+    EdtBairroCad: TEdit;
+    EdtCidadeCad: TEdit;
     BtnCriarConta: TButton;
     Label7: TLabel;
-    Edit8: TEdit;
-    Label8: TLabel;
+    EdtEnderecoCad: TEdit;
+    LblLogin2: TLabel;
     Layout4: TLayout;
-    Edit9: TEdit;
-    Edit10: TEdit;
+    EdtUFCad: TEdit;
+    EdtCEPCad: TEdit;
     Layout2: TLayout;
     StyleBook: TStyleBook;
     Rectangle1: TRectangle;
@@ -54,6 +54,10 @@ type
     Rectangle9: TRectangle;
     Rectangle10: TRectangle;
     procedure BtnLoginClick(Sender: TObject);
+    procedure LblCadContaClick(Sender: TObject);
+    procedure LblLoginClick(Sender: TObject);
+    procedure BtnProxClick(Sender: TObject);
+    procedure BtnCriarContaClick(Sender: TObject);
   private
     procedure ThreadLoginTerminate(Sender: TObject);
     { Private declarations }
@@ -70,6 +74,21 @@ implementation
 
 uses DataModule.Usuario, UnitPrincipal;
 
+procedure TFrmLogin.LblLoginClick(Sender: TObject);
+begin
+  TabControl.GotoVisibleTab(0);
+end;
+
+procedure TFrmLogin.BtnProxClick(Sender: TObject);
+begin
+  TabControl.GotoVisibleTab(2);
+end;
+
+procedure TFrmLogin.LblCadContaClick(Sender: TObject);
+begin
+  TabControl.GotoVisibleTab(1);
+end;
+
 procedure TFrmLogin.ThreadLoginTerminate(Sender: TObject);
 begin
    TLoading.Hide;
@@ -85,7 +104,30 @@ begin
    //Abrir o Unit Principal
    if NOT Assigned(FrmPrincipal) then
       Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+   Application.MainForm := FrmPrincipal;
    FrmPrincipal.Show;
+   FrmLogin.Close;
+end;
+
+procedure TFrmLogin.BtnCriarContaClick(Sender: TObject);
+var
+  t : TThread;
+begin
+  TLoading.Show(FrmLogin, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     DmUsuario.CriarConta(EdtNomeCad.Text, EdtEmailCad.Text, EdtSenhaCad.Text,
+                          EdtEnderecoCad.Text, EdtBairroCad.Text, EdtCidadeCad.Text,
+                          EdtUFCad.Text, EdtCepCad.Text);
+
+     if DmUsuario.TabUsuario.RecordCount > 0 then
+     begin
+
+     end;
+  end);
+
+  t.OnTerminate := ThreadLoginTerminate;
+  t.Start;
 end;
 
 procedure TFrmLogin.BtnLoginClick(Sender: TObject);
@@ -95,6 +137,7 @@ begin
   TLoading.Show(FrmLogin, '');
   t := TThread.CreateAnonymousThread(procedure
   begin
+     sleep(1500);
      DmUsuario.Login(edtEmail.Text, edtSenha.Text);
 
      if DmUsuario.TabUsuario.RecordCount > 0 then

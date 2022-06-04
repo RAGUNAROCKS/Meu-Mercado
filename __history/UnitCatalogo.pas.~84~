@@ -40,8 +40,9 @@ type
       const Item: TListBoxItem);
   private
     FId_Mercado: integer;
-    procedure AddProduto(id_produto: integer; descricao, unidade: string;
-      valor: double);
+    procedure AddProduto(id_produto: integer;
+                         descricao, unidade, url_foto: string;
+                         valor: double);
     procedure ListarProdutos(id_categoria: integer);
     procedure ListarCategorias;
     procedure AddCategoria(id_categoria: integer; descricao: string);
@@ -49,6 +50,7 @@ type
     procedure CarregarDados;
     procedure ThreadDadosTerminate(Sender: TObject);
     procedure ThreadProdutosTerminate(Sender: TObject);
+    procedure DownloadFoto(lb: TListBox);
     { Private declarations }
   public
     property Id_mercado: integer read FId_Mercado write FId_Mercado;
@@ -64,9 +66,42 @@ implementation
 
 uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado;
 
+procedure TFrmCatalogo.DownloadFoto(lb: TListBox);
+var
+    t: TThread;
+    foto: TBitmap;
+    frame: TFrameProdutoCard;
+begin
+    // Carregar imagens...
+    t := TThread.CreateAnonymousThread(procedure
+    var
+        i : integer;
+    begin
+
+        for i := 0 to lb.Items.Count - 1 do
+        begin
+            sleep(1000);
+            frame := TFrameProdutoCard(lb.ItemByIndex(i).Components[0]);
+
+
+            if frame.imgFoto.TagString <> '' then
+            begin
+                foto := TBitmap.Create;
+                LoadImageFromURL(foto, frame.imgFoto.TagString);
+
+                frame.imgFoto.TagString := '';
+                frame.imgFoto.bitmap := foto;
+            end;
+        end;
+
+    end);
+
+    t.Start;
+end;
+
 procedure TFrmCatalogo.AddProduto(id_produto: integer;
-                                 descricao, unidade: string;
-                                 valor: double);
+                                  descricao, unidade, url_foto: string;
+                                  valor: double);
 var
     item: TListBoxItem;
     frame: TFrameProdutCard;
@@ -82,6 +117,7 @@ begin
     frame.LblDescricao.Text := descricao;
     frame.LblPreco.Text := FormatFloat('R$ #,##0.00', valor);
     frame.LblUnidade.Text := unidade;
+    frame.ImgProduto.TagString := url_foto;
 
     item.AddObject(frame);
 
@@ -97,6 +133,7 @@ begin
 
     t := TThread.CreateAnonymousThread(procedure
     begin
+      sleep(1500);
       DmMercado.ListarProduto(Id_mercado, id_categoria);
       with DmMercado.TabProduto do
        begin
