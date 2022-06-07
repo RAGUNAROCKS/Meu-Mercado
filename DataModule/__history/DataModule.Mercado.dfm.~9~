@@ -34,7 +34,7 @@ object DmMercado: TDmMercado
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     Left = 64
-    Top = 96
+    Top = 88
   end
   object TabProdDetalhe: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
@@ -46,10 +46,5 @@ object DmMercado: TDmMercado
     UpdateOptions.AutoCommitUpdates = True
     Left = 64
     Top = 184
-  end
-  object QryMercado: TFDQuery
-    Connection = DmUsuario.conn
-    Left = 160
-    Top = 96
   end
 end

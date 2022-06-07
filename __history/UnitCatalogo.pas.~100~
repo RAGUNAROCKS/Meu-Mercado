@@ -53,6 +53,7 @@ type
     procedure ThreadDadosTerminate(Sender: TObject);
     procedure ThreadProdutosTerminate(Sender: TObject);
     procedure DownloadFoto(lb: TListBox);
+    function ExistePedidoLocal(id_mercado: integer): boolean;
     { Private declarations }
   public
     property Id_mercado: integer read FId_Mercado write FId_Mercado;
@@ -352,5 +353,19 @@ begin
 
    DownloadFoto(ltbProdutos);
 end;
+
+function TFrmCatalogo.ExistePedidoLocal(id_mercado: integer):boolean;
+begin
+   with DmMercado.QryMercado do
+   begin
+    Active := false;
+    SQL.Clear;
+    SQL.Add('SELECT * FROM TAB_CARRINHO WHERE ID_MERCADO <> :ID_MERCADO');
+    parambyname('ID_MERCADO').Value := id_mercado;
+    Active := true;
+    Result := RecordCount > 0;
+   end;
+end;
+
 
 end.

@@ -9,7 +9,6 @@ object FrmLogin: TFrmLogin
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
-  OnShow = FormShow
   DesignerMasterStyle = 3
   object TabControl: TTabControl
     Align = Client

@@ -89,17 +89,8 @@ procedure TFrmLogin.FormShow(Sender: TObject);
 begin
     try
       DmUsuario.ListarUsuarioLocal;
-       if DmUsuario.QryUsuario.RecordCount > 0 then
-       begin
-         //Abrir o Unit Principal
-         if NOT Assigned(FrmPrincipal) then
-            Application.CreateForm(TFrmPrincipal, FrmPrincipal);
-         Application.MainForm := FrmPrincipal;
-         FrmPrincipal.Show;
-         FrmLogin.Close;
-       end;
-    except on ex:exception do
-      showmessage(ex.Message);
+    finally
+
     end;
 end;
 

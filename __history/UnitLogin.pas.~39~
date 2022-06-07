@@ -58,7 +58,6 @@ type
     procedure LblLoginClick(Sender: TObject);
     procedure BtnProxClick(Sender: TObject);
     procedure BtnCriarContaClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
     procedure ThreadLoginTerminate(Sender: TObject);
     { Private declarations }
@@ -83,24 +82,6 @@ end;
 procedure TFrmLogin.BtnProxClick(Sender: TObject);
 begin
   TabControl.GotoVisibleTab(2);
-end;
-
-procedure TFrmLogin.FormShow(Sender: TObject);
-begin
-    try
-      DmUsuario.ListarUsuarioLocal;
-       if DmUsuario.QryUsuario.RecordCount > 0 then
-       begin
-         //Abrir o Unit Principal
-         if NOT Assigned(FrmPrincipal) then
-            Application.CreateForm(TFrmPrincipal, FrmPrincipal);
-         Application.MainForm := FrmPrincipal;
-         FrmPrincipal.Show;
-         FrmLogin.Close;
-       end;
-    except on ex:exception do
-      showmessage(ex.Message);
-    end;
 end;
 
 procedure TFrmLogin.LblCadContaClick(Sender: TObject);

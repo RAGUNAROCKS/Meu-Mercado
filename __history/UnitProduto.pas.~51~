@@ -112,8 +112,8 @@ begin
                 //DmMercado.AdicionarItemCarrinhoLocal(Id_produto, imgFoto.TagString, lblNome.Text, lblUnidade.Text,
                                                 //lblQtd.Tag, lblValor.TagFloat);
             end;
-          end);
     end;
+
 end;
 
 procedure TFrmProduto.CarregarDados;

@@ -1,8 +1,8 @@
 object DmUsuario: TDmUsuario
   OldCreateOrder = False
   OnCreate = DataModuleCreate
-  Height = 258
-  Width = 343
+  Height = 156
+  Width = 237
   object TabUsuario: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -28,10 +28,5 @@ object DmUsuario: TDmUsuario
   object FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink
     Left = 152
     Top = 88
-  end
-  object QryUsuario: TFDQuery
-    Connection = conn
-    Left = 32
-    Top = 160
   end
 end

@@ -18,20 +18,16 @@ type
     conn: TFDConnection;
     QryGeral: TFDQuery;
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
-    QryUsuario: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure connBeforeConnect(Sender: TObject);
     procedure connAfterConnect(Sender: TObject);
   private
+
     { Private declarations }
   public
     procedure Login(email, senha: string);
-    procedure CriarConta(nome, email, senha, endereco, bairro,
-                         cidade, uf, cep: string);
-    procedure SalvarUsuarioLocal(id_usuario : integer; email,
-                                 nome, endereco, bairro,
-                                 cidade, uf,cep: string);
-    procedure ListarUsuarioLocal;
+    procedure CriarConta(nome, email, senha, endereco, bairro, cidade, uf,
+      cep: string);
     { Public declarations }
   end;
 
@@ -80,15 +76,14 @@ end;
 procedure TDmUsuario.connAfterConnect(Sender: TObject);
 begin
   conn.ExecSQL('CREATE TABLE IF NOT EXISTS '+
-               'TAB_USUARIO(ID_USUARIO INTEGER NOT NULL PRIMARY KEY, '+
-               'EMAIL VARCHAR(100), NOME VARCHAR(100), '+
+               'TAB_USUARIO(EMAIL VARCHAR(100), NOME VARCHAR(100), '+
                'ENDERECO VACHAR(100), BAIRRO VACHAR(100), CIDADE VACHAR(100), '+
                'UF VACHAR(100), CEP VACHAR(100))');
   conn.ExecSQL('CREATE TABLE IF NOT EXISTS '+
-               'TAB_CARRINHO(ID_MERCADO INTEGER NOT NULL PRIMARY KEY, NOME_MERCADO VARCHAR(100), '+
+               'TAB_CARRINHO(ID_MERCADO INTEGER, NOME_MERCADO VARCHAR(100), '+
                'ENDERECO_MERCADO VARCHAR(100), TAXA_ENTREGA DECIMAL(9,2))');
   conn.ExecSQL('CREATE TABLE IF NOT EXISTS '+
-               'TAB_CARRINHO_ITEM(ID_PRODUTO INTEGER NOT NULL PRIMARY KEY, URL_FOTO VACHAR, '+
+               'TAB_CARRINHO_ITEM(ID_PRODUTO INTEGER, URL_FOTO VACHAR, '+
                'NOME_PRODUTO VARCHAR(100), UNIDADE VARCHAR(100), '+
                'QTD DECIMAL(9,2), VALOR_UNITARIO DECIMAL(9,2), VALOR_TOTAL DECIMAL(9,2))');
 end;
@@ -136,44 +131,6 @@ begin
    finally
      json.DisposeOf;
    end;
-end;
-
-procedure TDmUsuario.SalvarUsuarioLocal(id_usuario : integer; email,
-                                        nome, endereco,
-                                        bairro, cidade, uf,
-                                        cep: string);
-begin
-  with QryUsuario do
-  begin
-    Active := false;
-    SQL.Clear;
-    SQL.Add('INSERT OR REPLACE INTO TAB_USUARIO('+
-            'ID_USUARIO, EMAIL, NOME, ENDERECO, BAIRRO, CIDADE, '+
-            'UF, CEP) VALUES(:ID_USUARIO, :EMAIL, :NOME, :ENDERECO, '+
-            ':BAIRRO, :CIDADE, :UF, :CEP)');
-
-    ParamByName('ID_USUARIO').Value := id_usuario;
-    ParamByName('EMAIL').Value := email;
-    ParamByName('NOME').Value := nome;
-    ParamByName('ENDERECO').Value := endereco;
-    ParamByName('BAIRRO').Value := bairro;
-    ParamByName('CIDADE').Value := cidade;
-    ParamByName('UF').Value := uf;
-    ParamByName('CEP').Value := cep;
-
-    ExecSQL;
-  end;
-end;
-
-procedure TDmUsuario.ListarUsuarioLocal;
-begin
-  with QryUsuario do
-  begin
-    Active := false;
-    SQL.Clear;
-    SQL.Add('SELECT * FROM TAB_USUARIO');
-    Active := true;
-  end;
 end;
 
 end.

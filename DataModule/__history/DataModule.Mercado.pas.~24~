@@ -18,6 +18,7 @@ type
     QryMercado: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
+    function ExistePedidoLocal(id_mercado: integer): boolean;
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
@@ -25,7 +26,6 @@ type
     procedure ListarCategoria(id_mercado: integer);
     procedure ListarProduto(id_mercado, id_categoria : integer; busca : string);
     procedure ListarProdutoId(id_produto: integer);
-    function ExistePedidoLocal(id_mercado: integer): boolean;
     { Public declarations }
   end;
 

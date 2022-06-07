@@ -353,4 +353,10 @@ begin
    DownloadFoto(ltbProdutos);
 end;
 
+function TFrmMercado.ExistePedidoLocal(id_mercado: integer);
+begin
+
+end;
+
+
 end.

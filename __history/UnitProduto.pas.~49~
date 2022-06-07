@@ -5,8 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, uLoading, uFunctions,
-  FMX.DialogService;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, uLoading, uFunctions;
 
 type
   TFrmProduto = class(TForm)
@@ -98,22 +97,9 @@ begin
     //Consiste em
     if DmMercado.ExistePedidoLocal(Id_mercado) then
     begin
-       TDialogService.MessageDialog('Você só pode adicionar itens de um mercado por vez. Deseja esvaziar a sacola e adicionar esse item?',
-                     TMsgDlgType.mtConfirmation,
-                     [TMsgDlgBtn.mbYes, TMsgDlgBtn.mbNo],
-                     TMsgDlgBtn.mbNo,
-                     0,
-         procedure(const AResult: TModalResult)
-         begin
-            if AResult = mrYes then
-            begin
-                //DmMercado.LimparCarrinhoLocal;
-                //DmMercado.AdicionarCarrinhoLocal(id_mercado, Nome_mercado, Endereco, Taxa_entrega);
-                //DmMercado.AdicionarItemCarrinhoLocal(Id_produto, imgFoto.TagString, lblNome.Text, lblUnidade.Text,
-                                                //lblQtd.Tag, lblValor.TagFloat);
-            end;
-          end);
+
     end;
+
 end;
 
 procedure TFrmProduto.CarregarDados;

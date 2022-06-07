@@ -25,7 +25,6 @@ type
     procedure ListarCategoria(id_mercado: integer);
     procedure ListarProduto(id_mercado, id_categoria : integer; busca : string);
     procedure ListarProdutoId(id_produto: integer);
-    function ExistePedidoLocal(id_mercado: integer): boolean;
     { Public declarations }
   end;
 

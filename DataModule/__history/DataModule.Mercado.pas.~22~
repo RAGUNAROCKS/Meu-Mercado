@@ -25,7 +25,6 @@ type
     procedure ListarCategoria(id_mercado: integer);
     procedure ListarProduto(id_mercado, id_categoria : integer; busca : string);
     procedure ListarProdutoId(id_produto: integer);
-    function ExistePedidoLocal(id_mercado: integer): boolean;
     { Public declarations }
   end;
 
@@ -132,19 +131,6 @@ begin
      if (resp.StatusCode <> 200) then
       raise Exception.Create(resp.Content);
 
-end;
-
-function TDmMercado.ExistePedidoLocal(id_mercado: integer):boolean;
-begin
-   with DmMercado.QryMercado do
-   begin
-    Active := false;
-    SQL.Clear;
-    SQL.Add('SELECT * FROM TAB_CARRINHO WHERE ID_MERCADO <> :ID_MERCADO');
-    parambyname('ID_MERCADO').Value := id_mercado;
-    Active := true;
-    Result := RecordCount > 0;
-   end;
 end;
 
 end.

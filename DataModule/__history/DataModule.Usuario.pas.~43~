@@ -23,15 +23,16 @@ type
     procedure connBeforeConnect(Sender: TObject);
     procedure connAfterConnect(Sender: TObject);
   private
+    procedure ListarUsuarioLocal;
     { Private declarations }
   public
     procedure Login(email, senha: string);
-    procedure CriarConta(nome, email, senha, endereco, bairro,
-                         cidade, uf, cep: string);
+    procedure CriarConta(nome, email, senha, endereco, bairro, cidade, uf,
+      cep: string);
     procedure SalvarUsuarioLocal(id_usuario : integer; email,
-                                 nome, endereco, bairro,
-                                 cidade, uf,cep: string);
-    procedure ListarUsuarioLocal;
+                                        nome, endereco,
+                                        bairro, cidade, uf,
+                                        cep: string);
     { Public declarations }
   end;
 
