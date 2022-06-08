@@ -66,7 +66,7 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutLista.Create(item);
-    frame.ImgProduto.TagString := url_foto;
+    //frame.img Produto(
     frame.LblDescricao.Text := descricao;
     frame.LblQtd.Text := qtd.ToString + ' x ' + FormatFloat('R$ #,##0.00', valor_unit);
     frame.LblValor.Text := FormatFloat('R$ #,##0.00', qtd * valor_unit);
@@ -89,7 +89,7 @@ begin
 
         for i := 0 to lb.Items.Count - 1 do
         begin
-            //sleep(1000);
+            sleep(1000);
             frame := TFrameProdutLista(lb.ItemByIndex(i).Components[0]);
 
             if frame.ImgProduto.TagString <> '' then

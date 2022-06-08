@@ -310,7 +310,7 @@ object FrmCarrinho: TFrmCarrinho
         Text = 'Subtotal'
         TabOrder = 1
       end
-      object LblSubtotal: TLabel
+      object Label2: TLabel
         Align = Right
         StyledSettings = [Family, Size, Style]
         Margins.Left = 10.000000000000000000
@@ -345,7 +345,7 @@ object FrmCarrinho: TFrmCarrinho
         Text = 'Taxa de entrega'
         TabOrder = 1
       end
-      object LblTaxa: TLabel
+      object Label4: TLabel
         Align = Right
         StyledSettings = [Family, Size, Style]
         Margins.Left = 10.000000000000000000
@@ -380,7 +380,7 @@ object FrmCarrinho: TFrmCarrinho
         Text = 'Total'
         TabOrder = 1
       end
-      object LblTotal: TLabel
+      object Label6: TLabel
         Align = Right
         StyledSettings = [Family, Size, Style]
         Margins.Left = 10.000000000000000000
@@ -411,7 +411,7 @@ object FrmCarrinho: TFrmCarrinho
       Text = 'Endere'#231'o de entrega'
       TabOrder = 1
     end
-    object LblEndEntrega: TLabel
+    object Label8: TLabel
       Align = Top
       StyledSettings = [Family, Size, Style]
       Margins.Left = 10.000000000000000000

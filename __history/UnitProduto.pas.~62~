@@ -153,9 +153,8 @@ begin
            LblValor.TagFloat := fieldbyname('preco').asfloat;
            LblDescricao.Text := fieldbyname('descricao').asstring;
 
+           LoadImageFromURL(ImgFoto.Bitmap, fieldbyname('url_foto').asstring);
         end);
-        ImgFoto.TagString := fieldbyname('url_foto').asstring;
-        LoadImageFromURL(ImgFoto.Bitmap, fieldbyname('url_foto').asstring);
      end;
   end);
 

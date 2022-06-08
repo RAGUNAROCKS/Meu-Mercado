@@ -20,6 +20,8 @@ type
     QryCarrinhoItem: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
+    procedure ListarCarrinhoLocal;
+    procedure ListarItemCarrinhoLocal;
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
@@ -33,8 +35,6 @@ type
                                             Taxa_entrega : double);
     procedure AdicionarItemCarrinhoLocal(Id_produto: integer; url_foto, nome,
       unidade: string; qtd, valor_unitario: double);
-    procedure ListarCarrinhoLocal;
-    procedure ListarItemCarrinhoLocal;
     function ExistePedidoLocal(id_mercado: integer): boolean;
     { Public declarations }
   end;

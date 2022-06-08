@@ -89,7 +89,7 @@ begin
 
         for i := 0 to lb.Items.Count - 1 do
         begin
-            //sleep(1000);
+            sleep(1000);
             frame := TFrameProdutLista(lb.ItemByIndex(i).Components[0]);
 
             if frame.ImgProduto.TagString <> '' then

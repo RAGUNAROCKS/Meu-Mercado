@@ -114,6 +114,7 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutCard.Create(item);
+    //frame.img Produto(
     frame.LblDescricao.Text := descricao;
     frame.LblPreco.Text := FormatFloat('R$ #,##0.00', valor);
     frame.LblUnidade.Text := unidade;

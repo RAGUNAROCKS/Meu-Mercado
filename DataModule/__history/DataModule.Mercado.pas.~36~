@@ -10,14 +10,13 @@ uses
   FireDAC.DApt, Math;
 
 type
-    TDmMercado = class(TDataModule)
+  TDmMercado = class(TDataModule)
     TabMercado: TFDMemTable;
     TabCategoria: TFDMemTable;
     TabProduto: TFDMemTable;
     TabProdDetalhe: TFDMemTable;
     QryMercado: TFDQuery;
     QryCarrinho: TFDQuery;
-    QryCarrinhoItem: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
@@ -28,13 +27,11 @@ type
     procedure ListarProduto(id_mercado, id_categoria : integer; busca : string);
     procedure ListarProdutoId(id_produto: integer);
     procedure LimparCarrinhoLocal;
-    procedure AdicionarCarrinhoLocal(Id_mercado : integer;
-                                            Nome_mercado, Endereco : string;
-                                            Taxa_entrega : double);
+    procedure AdicionarCarrinhoLocal(id_mercado : integer;
+                                     Nome_mercado, Endereco : string;
+                                     Taxa_entrega : double);
     procedure AdicionarItemCarrinhoLocal(Id_produto: integer; url_foto, nome,
       unidade: string; qtd, valor_unitario: double);
-    procedure ListarCarrinhoLocal;
-    procedure ListarItemCarrinhoLocal;
     function ExistePedidoLocal(id_mercado: integer): boolean;
     { Public declarations }
   end;
@@ -159,7 +156,7 @@ end;
 
 procedure TDmMercado.LimparCarrinhoLocal;
 begin
-   with QryCarrinho do
+   with DmMercado.QryCarrinho do
    begin
     Active := false;
     SQL.Clear;
@@ -171,41 +168,32 @@ begin
    end;
 end;
 
-procedure TDmMercado.AdicionarCarrinhoLocal(Id_mercado : integer;
+procedure TDmMercado.AdicionarCarrinhoLocal(id_mercado : integer;
                                             Nome_mercado, Endereco : string;
                                             Taxa_entrega : double);
 begin
-   with QryCarrinho do
+   with DmMercado.QryCarrinho do
+   begin
+    Active := false;
+    SQL.Clear;
+    SQL.Add('SELECT * FROM TAB_CARRINHO');
+    Active := true;
+    if True then
     begin
-        Active := false;
-        SQL.Clear;
-        SQL.Add('SELECT * FROM TAB_CARRINHO');
-        Active := true;
-
-        if RecordCount = 0 then
-        begin
-            Active := false;
-            SQL.Clear;
-            SQL.Add('INSERT INTO TAB_CARRINHO(ID_MERCADO, NOME_MERCADO, ENDERECO_MERCADO, TAXA_ENTREGA)');
-            SQL.Add('VALUES(:ID_MERCADO, :NOME_MERCADO, :ENDERECO_MERCADO, :TAXA_ENTREGA)');
-            ParamByName('ID_MERCADO').Value := Id_mercado;
-            ParamByName('NOME_MERCADO').Value := Nome_mercado;
-            ParamByName('ENDERECO_MERCADO').Value := Endereco;
-            ParamByName('TAXA_ENTREGA').Value := roundto(Taxa_entrega, -2);
-            ExecSQL;
-        end;
+      Active := false;
+      SQL.Clear;
+      SQL.Add('INSERT INTO TAB_CARRINHO(ID_MERCADO, NOME_MERCADO,'+
+              ' ENDERECO_MERCADO, TAXA_ENTREGA) VALUES(:ID_MERCADO,'+
+              ':NOME_MERCADO, :ENDERECO_MERCADO, :TAXA_ENTREGA)');
+      ParamByName('ID_MERCADO').Value := id_mercado;
+      ParamByName('NOME_MERCADO').Value := nome_mercado;
+      ParamByName('ENDERECO_MERCADO').Value := Endereco;
+      ParamByName('TAXA_ENTREGA').Value := Taxa_entrega;
+      ExecSQL;
     end;
-end;
 
-procedure TDmMercado.ListarCarrinhoLocal;
-begin
-    with QryCarrinho do
-    begin
-        Active := false;
-        SQL.Clear;
-        SQL.Add('SELECT * FROM TAB_CARRINHO');
-        Active := true;
-    end;
+    ExecSQL;
+   end;
 end;
 
 procedure TDmMercado.AdicionarItemCarrinhoLocal(Id_produto: integer;
@@ -216,27 +204,16 @@ begin
     begin
         Active := false;
         SQL.Clear;
-        SQL.Add('INSERT INTO TAB_CARRINHO_ITEM(ID_PRODUTO, URL_FOTO, NOME_PRODUTO, UNIDADE, QTD, VALOR_UNITARIO, VALOR_TOTAL)');
-        SQL.Add('VALUES(:ID_PRODUTO, :URL_FOTO, :NOME_PRODUTO, :UNIDADE, :QTD, :VALOR_UNITARIO, :VALOR_TOTAL)');
+        SQL.Add('INSERT INTO TAB_CARRINHO_ITEM(ID_PRODUTO, URL_FOTO, NOME, UNIDADE, QTD, VALOR_UNITARIO, VALOR_TOTAL)');
+        SQL.Add('VALUES(:ID_PRODUTO, :URL_FOTO, :NOME, :UNIDADE, :QTD, :VALOR_UNITARIO, :VALOR_TOTAL)');
         ParamByName('ID_PRODUTO').Value := Id_produto;
         ParamByName('URL_FOTO').Value := url_foto;
-        ParamByName('NOME_PRODUTO').Value := nome;
+        ParamByName('NOME').Value := nome;
         ParamByName('UNIDADE').Value := unidade;
         ParamByName('QTD').Value := qtd;
         ParamByName('VALOR_UNITARIO').Value := roundto(valor_unitario, -2);
         ParamByName('VALOR_TOTAL').Value := roundto(valor_unitario * qtd, -2);
         ExecSQL;
-    end;
-end;
-
-procedure TDmMercado.ListarItemCarrinhoLocal;
-begin
-    with QryCarrinhoItem do
-    begin
-        Active := false;
-        SQL.Clear;
-        SQL.Add('SELECT * FROM TAB_CARRINHO_ITEM');
-        Active := true;
     end;
 end;
 

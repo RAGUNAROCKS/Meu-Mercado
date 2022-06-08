@@ -5,8 +5,7 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Ani, FMX.ListBox,
-  uFunctions;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Ani, FMX.ListBox;
 
 type
   TFrmCarrinho = class(TForm)
@@ -36,7 +35,6 @@ type
                          descricao, url_foto: string;
                          qtd, valor_unit: double);
     procedure CarregarCarrinho;
-    procedure DownloadFoto(lb: TListBox);
     { Private declarations }
   public
     { Public declarations }
@@ -66,7 +64,7 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutLista.Create(item);
-    frame.ImgProduto.TagString := url_foto;
+    //frame.img Produto(
     frame.LblDescricao.Text := descricao;
     frame.LblQtd.Text := qtd.ToString + ' x ' + FormatFloat('R$ #,##0.00', valor_unit);
     frame.LblValor.Text := FormatFloat('R$ #,##0.00', qtd * valor_unit);
@@ -74,31 +72,6 @@ begin
     item.AddObject(frame);
 
     LtbProdutos.AddObject(item);
-end;
-
-procedure TFrmCarrinho.DownloadFoto(lb: TListBox);
-var
-    t: TThread;
-    frame: TFrameProdutLista;
-begin
-    // Carregar imagens...
-    t := TThread.CreateAnonymousThread(procedure
-    var
-        i : integer;
-    begin
-
-        for i := 0 to lb.Items.Count - 1 do
-        begin
-            //sleep(1000);
-            frame := TFrameProdutLista(lb.ItemByIndex(i).Components[0]);
-
-            if frame.ImgProduto.TagString <> '' then
-                LoadImageFromURL(frame.ImgProduto.Bitmap, frame.ImgProduto.TagString);
-        end;
-
-    end);
-
-    t.Start;
 end;
 
 procedure TFrmCarrinho.CarregarCarrinho;
@@ -131,7 +104,7 @@ begin
             while NOT EOF do
             begin
                 AddProduto(FieldByName('id_produto').AsInteger,
-                           FieldByName('nome_produto').AsString,
+                           FieldByName('nome').AsString,
                            FieldByName('url_foto').AsString,
                            FieldByName('qtd').AsFloat,
                            FieldByName('valor_unitario').AsFloat);
@@ -142,11 +115,11 @@ begin
             end;
         end;
 
-        lblSubtotal.Text := FormatFloat('R$ #,##0.00', subtotal);
+        lblSubTotal.Text := FormatFloat('R$ #,##0.00', subtotal);
         lblTotal.Text := FormatFloat('R$ #,##0.00', subtotal + lblTaxa.TagFloat);
 
         // Carrega as fotos...
-        DownloadFoto(LtbProdutos);
+        //DownloadFoto(lbProdutos);
 
     except on ex:exception do
         showmessage('Erro ao carregar carrinho: ' + ex.Message);

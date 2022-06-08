@@ -114,6 +114,7 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutCard.Create(item);
+    //frame.img Produto(
     frame.LblDescricao.Text := descricao;
     frame.LblPreco.Text := FormatFloat('R$ #,##0.00', valor);
     frame.LblUnidade.Text := unidade;
@@ -309,7 +310,6 @@ begin
            LblTitulo.Text := fieldbyname('nome').asstring;
            LblEndereco.Text := fieldbyname('endereco').asstring;
            LblTaxa.Text := 'Entrega: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_entrega').asfloat);
-           LblTaxa.TagFloat := fieldbyname('vl_entrega').asfloat;
            LblPreco.Text := 'Compra Mínima: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_compra_min').asfloat);
         end);
      end;

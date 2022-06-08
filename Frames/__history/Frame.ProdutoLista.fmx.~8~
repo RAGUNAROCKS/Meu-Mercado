@@ -405,6 +405,7 @@ object FrameProdutLista: TFrameProdutLista
     Size.Width = 65.000000000000000000
     Size.Height = 80.000000000000000000
     Size.PlatformDefault = False
+    OnClick = ImgProdutoClick
   end
   object Layout1: TLayout
     Align = Client

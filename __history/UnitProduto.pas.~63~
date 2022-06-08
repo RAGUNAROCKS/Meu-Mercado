@@ -154,7 +154,7 @@ begin
            LblDescricao.Text := fieldbyname('descricao').asstring;
 
         end);
-        ImgFoto.TagString := fieldbyname('url_foto').asstring;
+        imgFoto.TagString := fieldbyname('url_foto').asstring;
         LoadImageFromURL(ImgFoto.Bitmap, fieldbyname('url_foto').asstring);
      end;
   end);
