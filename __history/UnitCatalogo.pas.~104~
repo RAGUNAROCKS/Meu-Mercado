@@ -40,7 +40,6 @@ type
       const Item: TListBoxItem);
     procedure BtnBuscaClick(Sender: TObject);
     procedure ImgVoltarClick(Sender: TObject);
-    procedure ImgCarrinhoClick(Sender: TObject);
   private
     FId_Mercado: integer;
     procedure AddProduto(id_produto: integer;
@@ -67,8 +66,7 @@ implementation
 
 {$R *.fmx}
 
-uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado,
-  UnitCarrinho;
+uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado;
 
 procedure TFrmCatalogo.DownloadFoto(lb: TListBox);
 var
@@ -283,14 +281,6 @@ end;
 procedure TFrmCatalogo.FormShow(Sender: TObject);
 begin
    CarregarDados;
-end;
-
-procedure TFrmCatalogo.ImgCarrinhoClick(Sender: TObject);
-begin
-    if NOT Assigned(FrmCarrinho) then
-      Application.CreateForm(TFrmCarrinho, FrmCarrinho);
-
-      FrmCarrinho.Show;
 end;
 
 procedure TFrmCatalogo.ImgVoltarClick(Sender: TObject);

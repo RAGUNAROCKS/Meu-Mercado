@@ -178,8 +178,8 @@ begin
   if rectMenu.Tag = 0 then
         rectMenu.Visible := true;
 
-    //AnimationMenu.StartValue := rectMenu.Width + 50;
-    //AnimationMenu.StopValue := 0;
+    AnimationMenu.StartValue := rectMenu.Width + 50;
+    AnimationMenu.StopValue := 0;
     AnimationMenu.Start;
 end;
 

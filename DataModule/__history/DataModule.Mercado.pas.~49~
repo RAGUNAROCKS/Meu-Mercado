@@ -20,6 +20,7 @@ type
     QryCarrinhoItem: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
+    procedure InserirPedido(jsonPed: TJsonObject);
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
@@ -35,7 +36,6 @@ type
       unidade: string; qtd, valor_unitario: double);
     procedure ListarCarrinhoLocal;
     procedure ListarItemCarrinhoLocal;
-    procedure InserirPedido(jsonPed: TJsonObject);
     function ExistePedidoLocal(id_mercado: integer): boolean;
     function JsonPedido(vl_subtotal, vl_entrega, vl_total: double): TJsonObject;
     function JsonPedidoItem: TJsonArray;

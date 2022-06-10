@@ -20,6 +20,8 @@ type
     QryCarrinhoItem: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
+    function JsonPedido(vl_subtotal, vl_entrega, vl_total: double): TJsonObject;
+    function JsonPedidoItem: TJsonArray;
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
@@ -35,10 +37,7 @@ type
       unidade: string; qtd, valor_unitario: double);
     procedure ListarCarrinhoLocal;
     procedure ListarItemCarrinhoLocal;
-    procedure InserirPedido(jsonPed: TJsonObject);
     function ExistePedidoLocal(id_mercado: integer): boolean;
-    function JsonPedido(vl_subtotal, vl_entrega, vl_total: double): TJsonObject;
-    function JsonPedidoItem: TJsonArray;
     { Public declarations }
   end;
 
@@ -293,21 +292,6 @@ begin
     end;
 
     Result := arrayItem;
-end;
-
-procedure TDmMercado.InserirPedido(jsonPed: TJsonObject);
-var
-    resp: IResponse;
-begin
-    resp := TRequest.New.BaseURL(BASE_URL)
-            .Resource('pedidos')
-            .AddBody(jsonPed.ToJSON)
-            .Accept('application/json')
-            .BasicAuthentication(USER_NAME, PASSWORD)
-            .Post;
-
-    if (resp.StatusCode <> 201) then
-        raise Exception.Create(resp.Content);
 end;
 
 end.

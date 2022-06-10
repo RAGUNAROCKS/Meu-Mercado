@@ -138,7 +138,7 @@ begin
 
             tthread.Synchronize(TThread.CurrentThread, procedure
             begin
-                showmessage('Compra efetuada!');
+                showmessage('Pedido Solicitado!!!');
             end);
 
             DmMercado.InserirPedido(jsonPedido);

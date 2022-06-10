@@ -88,8 +88,8 @@ end;
 
 procedure TFrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-    //Action := TCloseAction.caFree;
-    //FrmLogin := nil;
+    Action := TCloseAction.caFree;
+    FrmLogin := nil;
 end;
 
 procedure TFrmLogin.FormShow(Sender: TObject);

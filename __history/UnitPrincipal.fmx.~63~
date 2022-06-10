@@ -2371,10 +2371,13 @@ object FrmPrincipal: TFrmPrincipal
       end
     end
     object AnimationMenu: TFloatAnimation
-      Duration = 0.600000023841857900
+      AutoReverse = True
+      Duration = 0.200000002980232200
+      Interpolation = Circular
       OnFinish = AnimationMenuFinish
       PropertyName = 'Margins.Right'
       StartValue = 500.000000000000000000
+      StartFromCurrent = True
       StopValue = 0.000000000000000000
     end
   end

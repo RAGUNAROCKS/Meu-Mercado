@@ -2372,6 +2372,7 @@ object FrmPrincipal: TFrmPrincipal
     end
     object AnimationMenu: TFloatAnimation
       Duration = 0.600000023841857900
+      OnProcess = AnimationMenuProcess
       OnFinish = AnimationMenuFinish
       PropertyName = 'Margins.Right'
       StartValue = 500.000000000000000000

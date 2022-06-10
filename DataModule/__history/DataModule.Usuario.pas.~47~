@@ -179,22 +179,12 @@ end;
 
 procedure TDmUsuario.Logout;
 begin
-  with QryGeral do
+  with QryUsuario do
   begin
     Active := false;
     SQL.Clear;
-    SQL.Add('DELETE FROM TAB_USUARIO');
-    ExecSQl;
-
-    Active := false;
-    SQL.Clear;
-    SQL.Add('DELETE FROM TAB_CARRINHO');
-    ExecSQl;
-
-    Active := false;
-    SQL.Clear;
-    SQL.Add('DELETE FROM TAB_CARRINHO_ITEM');
-    ExecSQl;
+    SQL.Add('SELECT * FROM TAB_USUARIO');
+    Active := true;
   end;
 end;
 

@@ -32,7 +32,6 @@ type
     LtbProdutos: TListBox;
     procedure FormShow(Sender: TObject);
     procedure BtnFinalizarClick(Sender: TObject);
-    procedure ImgVoltarClick(Sender: TObject);
   private
     procedure AddProduto(id_produto: integer;
                          descricao, url_foto: string;
@@ -131,14 +130,12 @@ begin
     t := TThread.CreateAnonymousThread(procedure
     begin
        try
-            jsonPedido := DmMercado.JsonPedido(LblSubtotal.TagFloat,
-                                               LblTaxa.TagFloat,
-                                               LblTotal.TagFloat);
+            jsonPedido := DmMercado.JsonPedido(lblSubTotal.TagFloat, lblTaxa.TagFloat, lblTotal.TagFloat);
             jsonPedido.AddPair('itens', DmMercado.JsonPedidoItem);
 
             tthread.Synchronize(TThread.CurrentThread, procedure
             begin
-                showmessage('Compra efetuada!');
+                showmessage(jsonPedido.ToJSON);
             end);
 
             DmMercado.InserirPedido(jsonPedido);
@@ -191,10 +188,8 @@ begin
             end;
         end;
 
-        LblSubtotal.Text := FormatFloat('R$ #,##0.00', subtotal);
-        LblSubtotal.TagFloat := subtotal;
-        LblTotal.Text := FormatFloat('R$ #,##0.00', subtotal + lblTaxa.TagFloat);
-        LblTotal.TagFloat := subtotal + LblTaxa.TagFloat;
+        lblSubtotal.Text := FormatFloat('R$ #,##0.00', subtotal);
+        lblTotal.Text := FormatFloat('R$ #,##0.00', subtotal + lblTaxa.TagFloat);
 
         // Carrega as fotos...
         DownloadFoto(LtbProdutos);
@@ -207,11 +202,6 @@ end;
 procedure TFrmCarrinho.FormShow(Sender: TObject);
 begin
   CarregarCarrinho;
-end;
-
-procedure TFrmCarrinho.ImgVoltarClick(Sender: TObject);
-begin
-    close;
 end;
 
 end.

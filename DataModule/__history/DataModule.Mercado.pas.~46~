@@ -20,6 +20,7 @@ type
     QryCarrinhoItem: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
   private
+    function JsonPedido(vl_subtotal, vl_entrega, vl_total: double): TJsonObject;
     { Private declarations }
   public
     procedure ListarMercado(busca, ind_entrega, ind_retira: string);
@@ -35,10 +36,7 @@ type
       unidade: string; qtd, valor_unitario: double);
     procedure ListarCarrinhoLocal;
     procedure ListarItemCarrinhoLocal;
-    procedure InserirPedido(jsonPed: TJsonObject);
     function ExistePedidoLocal(id_mercado: integer): boolean;
-    function JsonPedido(vl_subtotal, vl_entrega, vl_total: double): TJsonObject;
-    function JsonPedidoItem: TJsonArray;
     { Public declarations }
   end;
 
@@ -264,50 +262,6 @@ begin
     jsonPed.AddPair('cep', DmUsuario.QryUsuario.FieldByName('cep').AsString);
 
     Result := jsonPed;
-end;
-
-function TDmMercado.JsonPedidoItem: TJsonArray;
-var
-    arrayItem: TJsonArray;
-    objJSON: TJSONObject;
-begin
-    ListarItemCarrinhoLocal;
-
-    arrayItem := TJsonArray.Create;
-
-    with QryCarrinhoItem do
-    begin
-        while NOT Eof do
-        begin
-            objJSON := TJSONObject.Create;
-
-            objJSON.AddPair('id_produto', TJSONNumber.Create(FieldByName('id_produto').AsInteger));
-            objJSON.AddPair('qtd', TJSONNumber.Create(FieldByName('qtd').AsInteger));
-            objJSON.AddPair('vl_unitario', TJSONNumber.Create(FieldByName('valor_unitario').AsFloat));
-            objJSON.AddPair('vl_total', TJSONNumber.Create(FieldByName('valor_total').AsFloat));
-
-            arrayItem.AddElement(objJSON);
-
-            Next;
-        end;
-    end;
-
-    Result := arrayItem;
-end;
-
-procedure TDmMercado.InserirPedido(jsonPed: TJsonObject);
-var
-    resp: IResponse;
-begin
-    resp := TRequest.New.BaseURL(BASE_URL)
-            .Resource('pedidos')
-            .AddBody(jsonPed.ToJSON)
-            .Accept('application/json')
-            .BasicAuthentication(USER_NAME, PASSWORD)
-            .Post;
-
-    if (resp.StatusCode <> 201) then
-        raise Exception.Create(resp.Content);
 end;
 
 end.

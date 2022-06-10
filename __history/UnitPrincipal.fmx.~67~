@@ -2375,6 +2375,7 @@ object FrmPrincipal: TFrmPrincipal
       OnFinish = AnimationMenuFinish
       PropertyName = 'Margins.Right'
       StartValue = 500.000000000000000000
+      StartFromCurrent = True
       StopValue = 0.000000000000000000
     end
   end

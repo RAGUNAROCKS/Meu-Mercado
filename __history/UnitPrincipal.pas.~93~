@@ -55,6 +55,7 @@ type
     procedure RectMenuLogoutClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure AnimationMenuFinish(Sender: TObject);
+    procedure AnimationMenuProcess(Sender: TObject);
   private
     FInd_Retira: string;
     FInd_Entrega: string;
@@ -223,6 +224,12 @@ begin
     end
     else
         rectMenu.Tag := 1;
+end;
+
+procedure TFrmPrincipal.AnimationMenuProcess(Sender: TObject);
+begin
+   AnimationMenu.StartValue := rectMenu.Width + 50;
+   AnimationMenu.StopValue := 0;
 end;
 
 procedure TFrmPrincipal.BtnBuscaClick(Sender: TObject);

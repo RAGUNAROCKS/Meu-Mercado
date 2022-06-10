@@ -2370,12 +2370,5 @@ object FrmPrincipal: TFrmPrincipal
         TabOrder = 0
       end
     end
-    object AnimationMenu: TFloatAnimation
-      Duration = 0.600000023841857900
-      OnFinish = AnimationMenuFinish
-      PropertyName = 'Margins.Right'
-      StartValue = 500.000000000000000000
-      StopValue = 0.000000000000000000
-    end
   end
 end

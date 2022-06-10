@@ -67,8 +67,7 @@ implementation
 
 {$R *.fmx}
 
-uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado,
-  UnitCarrinho;
+uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado;
 
 procedure TFrmCatalogo.DownloadFoto(lb: TListBox);
 var

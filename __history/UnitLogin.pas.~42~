@@ -59,7 +59,6 @@ type
     procedure BtnProxClick(Sender: TObject);
     procedure BtnCriarContaClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure ThreadLoginTerminate(Sender: TObject);
     { Private declarations }
@@ -86,12 +85,6 @@ begin
   TabControl.GotoVisibleTab(2);
 end;
 
-procedure TFrmLogin.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-    //Action := TCloseAction.caFree;
-    //FrmLogin := nil;
-end;
-
 procedure TFrmLogin.FormShow(Sender: TObject);
 begin
     try
@@ -101,7 +94,6 @@ begin
          //Abrir o Unit Principal
          if NOT Assigned(FrmPrincipal) then
             Application.CreateForm(TFrmPrincipal, FrmPrincipal);
-         FrmPrincipal.LblMenuNome.text := DmUsuario.QryUsuario.FieldByName('nome').AsString;
          FrmPrincipal.LblMenuEmail.text := DmUsuario.QryUsuario.FieldByName('email').AsString;
          Application.MainForm := FrmPrincipal;
          FrmPrincipal.Show;
@@ -132,12 +124,6 @@ begin
    //Abrir o Unit Principal
    if NOT Assigned(FrmPrincipal) then
       Application.CreateForm(TFrmPrincipal, FrmPrincipal);
-   try
-     DmUsuario.ListarUsuarioLocal;
-   finally
-   end;
-   FrmPrincipal.LblMenuNome.text := DmUsuario.QryUsuario.FieldByName('nome').AsString;
-   FrmPrincipal.LblMenuEmail.text := DmUsuario.QryUsuario.FieldByName('email').AsString;
    Application.MainForm := FrmPrincipal;
    FrmPrincipal.Show;
    FrmLogin.Close;

@@ -239,7 +239,7 @@ end;
 procedure TFrmPrincipal.FormShow(Sender: TObject);
 begin
       rectMenu.Tag := 0;
-      rectMenu.Margins.Right := rectMenu.Width + 50;
+      rectMenu.Margins.Right := rectMenu.Width + (rectMenu.Width/10);
       rectMenu.Visible := false;
 
       SelecionarEntrega(lblCasa);

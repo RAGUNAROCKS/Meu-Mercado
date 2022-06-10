@@ -1,7 +1,4 @@
-﻿[BtnBusca]
-Coordinates=10,232,69,58
-
-[LblTitulo]
+﻿[LblTitulo]
 Coordinates=89,232,64,58
 
 [ImgVoltar]
@@ -61,4 +58,7 @@ Coordinates=163,232,60,58
 
 []
 Coordinates=529,1,91,36
+
+[BtnFinalizar]
+Coordinates=10,232,69,58
 

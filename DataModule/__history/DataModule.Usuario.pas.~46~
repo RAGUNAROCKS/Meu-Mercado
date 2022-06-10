@@ -32,7 +32,6 @@ type
                                  nome, endereco, bairro,
                                  cidade, uf,cep: string);
     procedure ListarUsuarioLocal;
-    procedure Logout;
     { Public declarations }
   end;
 
@@ -174,27 +173,6 @@ begin
     SQL.Clear;
     SQL.Add('SELECT * FROM TAB_USUARIO');
     Active := true;
-  end;
-end;
-
-procedure TDmUsuario.Logout;
-begin
-  with QryGeral do
-  begin
-    Active := false;
-    SQL.Clear;
-    SQL.Add('DELETE FROM TAB_USUARIO');
-    ExecSQl;
-
-    Active := false;
-    SQL.Clear;
-    SQL.Add('DELETE FROM TAB_CARRINHO');
-    ExecSQl;
-
-    Active := false;
-    SQL.Clear;
-    SQL.Add('DELETE FROM TAB_CARRINHO_ITEM');
-    ExecSQl;
   end;
 end;
 

@@ -131,14 +131,12 @@ begin
     t := TThread.CreateAnonymousThread(procedure
     begin
        try
-            jsonPedido := DmMercado.JsonPedido(LblSubtotal.TagFloat,
-                                               LblTaxa.TagFloat,
-                                               LblTotal.TagFloat);
+            jsonPedido := DmMercado.JsonPedido(lblSubTotal.TagFloat, lblTaxa.TagFloat, lblTotal.TagFloat);
             jsonPedido.AddPair('itens', DmMercado.JsonPedidoItem);
 
             tthread.Synchronize(TThread.CurrentThread, procedure
             begin
-                showmessage('Compra efetuada!');
+                showmessage(jsonPedido.ToJSON);
             end);
 
             DmMercado.InserirPedido(jsonPedido);
