@@ -13,7 +13,8 @@ controllerPedidos.get("/pedidos", function(request, response){
     ssql += "where p.id_usuario = ? ";
     ssql += "group by p.id_pedido, p.id_usuario, p.id_mercado, p.dt_pedido, "
     ssql += "p.vl_subtotal, p.vl_entrega, p.vl_total, p.endereco, p.bairro, "
-    ssql += "p.cidade, p.uf, p.cep, m.nome"
+    ssql += "p.cidade, p.uf, p.cep, m.nome "
+    ssql += "order by p.id_pedido desc"
 
     db.query(ssql, [request.query.id_usuario], function(err, result){
         if(err){
@@ -25,14 +26,33 @@ controllerPedidos.get("/pedidos", function(request, response){
 });
 
 controllerPedidos.get("/pedidos/:id_pedido", function(request, response){
-    let ssql = "select * from pedido";
-    ssql += " where id_pedido = ?";
+    let ssql = "select p.*, m.nome as nome_mercado, m.endereco as endereco_mercado";
+    ssql += " from pedido p";
+    ssql += " join mercado m on (m.id_mercado = p.id_mercado)"
+    ssql += " where p.id_pedido = ?";
 
     db.query(ssql, [request.params.id_pedido], function(err, result){
         if(err){
             return response.status(500).send(err);
         }else{
-            return response.status(result.length > 0 ? 200 : 404).json(result[0]);
+            let id_pedido = result[0].id_pedido;
+            let jsonPedido = result[0];
+
+            ssql = "select i.id_item, i.id_produto, i.qtd, i.vl_unitario, i.vl_total, p.descricao, p.url_foto";
+            ssql += " from pedido_item i";
+            ssql += " join produto p on (p.id_produto = i.id_produto)";
+            ssql += " where i.id_pedido = ?";
+
+            db.query(ssql, [id_pedido], function(err, result){
+                if(err){
+                    return response.status(500).send(err);
+                }else{
+                    jsonPedido["itens"] = result;
+                    return response.status(200).json(jsonPedido);    
+                }
+            })
+
+            
         }
     });
 });

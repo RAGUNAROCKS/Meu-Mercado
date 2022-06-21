@@ -19,6 +19,7 @@ type
     QryGeral: TFDQuery;
     FDPhysSQLiteDriverLink1: TFDPhysSQLiteDriverLink;
     QryUsuario: TFDQuery;
+    TabPedido: TFDMemTable;
     procedure DataModuleCreate(Sender: TObject);
     procedure connBeforeConnect(Sender: TObject);
     procedure connAfterConnect(Sender: TObject);
@@ -33,6 +34,8 @@ type
                                  cidade, uf,cep: string);
     procedure ListarUsuarioLocal;
     procedure Logout;
+    procedure ListarPedido(id_usuario: integer);
+    function JsonPedido(id_pedido: integer): TJsonObject;
     { Public declarations }
   end;
 
@@ -137,6 +140,39 @@ begin
    finally
      json.DisposeOf;
    end;
+end;
+
+procedure TDmUsuario.ListarPedido(id_usuario: integer);
+var
+  resp: Iresponse;
+  json: TJSONObject;
+begin
+     resp := TRequest.New.BaseURL('http://localhost:3000')
+             .Resource('pedidos')
+             .AddParam('id_usuario', id_usuario.ToString)
+             .DataSetAdapter(TabPedido)
+             .Accept('application/json')
+             .BasicAuthentication('99coders', '123456').Get;
+
+     if (resp.StatusCode <> 200) then
+      raise Exception.Create(resp.Content);
+end;
+
+function TDmUsuario.JsonPedido(id_pedido: integer): TJsonObject;
+var
+  resp: Iresponse;
+  json: TJSONObject;
+begin
+     resp := TRequest.New.BaseURL('http://localhost:3000')
+             .Resource('pedidos')
+             .ResourceSuffix(id_pedido.ToString)
+             .Accept('application/json')
+             .BasicAuthentication('99coders', '123456').Get;
+
+     if (resp.StatusCode <> 200) then
+      raise Exception.Create(resp.Content)
+     else
+      Result := TJsonObject.ParseJSONValue(TEncoding.UTF8.GetBytes(resp.Content), 0) as TJsonObject;
 end;
 
 procedure TDmUsuario.SalvarUsuarioLocal(id_usuario : integer; email,

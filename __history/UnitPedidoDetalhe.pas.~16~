@@ -1,0 +1,130 @@
+unit UnitPedidoDetalhe;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox, uLoading,
+  System.JSON;
+
+type
+  TFrmPedidoDetalhe = class(TForm)
+    LtyEndereco: TLayout;
+    LblNomeMerc: TLabel;
+    LblEnderecoMerc: TLabel;
+    LytToolbar: TLayout;
+    LblTitulo: TLabel;
+    ImgVoltar: TImage;
+    Rectangle1: TRectangle;
+    Layout1: TLayout;
+    Label1: TLabel;
+    LblSubtotal: TLabel;
+    Layout2: TLayout;
+    Label3: TLabel;
+    LblTaxa: TLabel;
+    Layout3: TLayout;
+    Label5: TLabel;
+    LblTotal: TLabel;
+    Label7: TLabel;
+    LblEndEntrega: TLabel;
+    LtbProdutos: TListBox;
+    procedure FormShow(Sender: TObject);
+  private
+    Fid_pedido: integer;
+    procedure AddProduto(id_produto: integer; descricao: string; qtd,
+      valor_unit: double; foto: TStream);
+    procedure CarregarPedido;
+    procedure ThreadDadosTerminate(Sender: TObject);
+    { Private declarations }
+  public
+     property id_pedido: integer read Fid_pedido write Fid_pedido;
+    { Public declarations }
+  end;
+
+var
+  FrmPedidoDetalhe: TFrmPedidoDetalhe;
+
+implementation
+
+{$R *.fmx}
+
+uses Frame.ProdutoLista, DataModule.Usuario;
+
+procedure TFrmPedidoDetalhe.AddProduto(id_produto: integer;
+                                 descricao: string;
+                                 qtd, valor_unit: double;
+                                 foto: TStream);
+var
+    item: TListBoxItem;
+    frame: TFrameProdutLista;
+begin
+    item := TListBoxItem.Create(LtbProdutos);
+    item.Selectable := false;
+    item.Text := '';
+    item.Height := 80;
+    item.Tag := id_produto;
+
+    frame := TFrameProdutLista.Create(item);
+    //frame.img Produto(
+    frame.LblDescricao.Text := descricao;
+    frame.LblQtd.Text := qtd.ToString + ' x ' + FormatFloat('R$ #,##0.00', valor_unit);
+    frame.LblValor.Text := FormatFloat('R$ #,##0.00', qtd * valor_unit);
+
+    item.AddObject(frame);
+
+    LtbProdutos.AddObject(item);
+end;
+
+procedure TFrmPedidoDetalhe.CarregarPedido;
+var
+  t: TThread;
+  jsonObj: TJsonObject;
+begin
+  TLoading.Show(FrmPedidoDetalhe, '');
+  t := TThread.CreateAnonymousThread(procedure
+    begin
+      jsonObj := DmUsuario.JsonPedido(id_pedido);
+      TThread.Synchronize(TThread.CurrentThread, procedure
+      begin
+        LblTitulo.Text := 'Pedido #' + jsonObj.GetValue<string>('id_pedido', '');
+        LblNomeMerc.Text := jsonObj.GetValue<string>('nome_mercado', '');
+        LblEnderecoMerc.Text := jsonObj.GetValue<string>('endereco_mercado', '');
+        LblSubtotal.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_subtotal', 0));
+        LblTaxa.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_entrega', 0));
+        LblTotal.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_total', 0));
+        LblEndEntrega.Text := jsonObj.GetValue<string>('endereco', '');
+
+        {AddProduto(fieldbyname('id_pedido').asinteger,
+                    fieldbyname('qtd_itens').asinteger,
+                    fieldbyname('nome').asstring,
+                    fieldbyname('endereco').asstring,
+                    UTCtoDateBR(fieldbyname('dt_pedido').asstring),
+                    fieldbyname('vl_total').asfloat);}
+      end);
+      jsonObj.DisposeOf;
+    end);
+
+  t.OnTerminate := ThreadDadosTerminate;
+  t.Start;
+end;
+
+procedure TFrmPedidoDetalhe.ThreadDadosTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+end;
+
+procedure TFrmPedidoDetalhe.FormShow(Sender: TObject);
+begin
+      CarregarPedido;
+end;
+
+end.

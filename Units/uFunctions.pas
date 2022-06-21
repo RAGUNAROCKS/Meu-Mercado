@@ -6,6 +6,7 @@ uses  FMX.Graphics, System.Net.HttpClientComponent, System.Classes,
 System.SysUtils, System.Net.HttpClient;
 
 procedure LoadImageFromURL(img: TBitmap; url: string);
+function UTCtoDateBR(dt: string): string;
 
 implementation
 
@@ -37,5 +38,11 @@ begin
         http.DisposeOf;
     end;
 end;
+
+function UTCtoDateBR(dt: string): string;
+	begin
+	    // 2022-05-05 15:23:52.000
+	    Result := Copy(dt, 9, 2) + '/' + Copy(dt, 6, 2) + '/' + Copy(dt, 1, 4) + ' ' + Copy(dt, 12, 8);
+	end;
 
 end.

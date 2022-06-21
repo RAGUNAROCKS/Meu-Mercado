@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.TabControl,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Objects, FMX.Edit,
-  uLoading;
+  uLoading, uSession;
 
 type
   TFrmLogin = class(TForm)
@@ -62,6 +62,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure ThreadLoginTerminate(Sender: TObject);
+    procedure ThreadShowTerminate(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -92,24 +93,46 @@ begin
     //FrmLogin := nil;
 end;
 
-procedure TFrmLogin.FormShow(Sender: TObject);
+procedure TFrmLogin.ThreadShowTerminate(Sender: TObject);
 begin
-    try
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   if DmUsuario.QryUsuario.RecordCount > 0 then
+   begin
+      //Abrir o Unit Principal
+      if NOT Assigned(FrmPrincipal) then
+        Application.CreateForm(TFrmPrincipal, FrmPrincipal);
+
+      Application.MainForm := FrmPrincipal;
+      TSession.ID_USUARIO := DmUsuario.QryUsuario.FieldByName('id_usuario').AsInteger;
+      FrmPrincipal.LblMenuNome.text := DmUsuario.QryUsuario.FieldByName('nome').AsString;
+      FrmPrincipal.LblMenuEmail.text := DmUsuario.QryUsuario.FieldByName('email').AsString;
+      FrmPrincipal.Show;
+      FrmLogin.Close;
+   end;
+end;
+
+procedure TFrmLogin.FormShow(Sender: TObject);
+var
+  t: TThread;
+begin
+  TLoading.Show(FrmLogin, '');
+  t := TThread.CreateAnonymousThread(procedure
+    begin
       DmUsuario.ListarUsuarioLocal;
-       if DmUsuario.QryUsuario.RecordCount > 0 then
-       begin
-         //Abrir o Unit Principal
-         if NOT Assigned(FrmPrincipal) then
-            Application.CreateForm(TFrmPrincipal, FrmPrincipal);
-         FrmPrincipal.LblMenuNome.text := DmUsuario.QryUsuario.FieldByName('nome').AsString;
-         FrmPrincipal.LblMenuEmail.text := DmUsuario.QryUsuario.FieldByName('email').AsString;
-         Application.MainForm := FrmPrincipal;
-         FrmPrincipal.Show;
-         FrmLogin.Close;
-       end;
-    except on ex:exception do
-      showmessage(ex.Message);
-    end;
+    end);
+
+  t.OnTerminate := ThreadShowTerminate;
+  t.Start;
 end;
 
 procedure TFrmLogin.LblCadContaClick(Sender: TObject);
@@ -136,9 +159,10 @@ begin
      DmUsuario.ListarUsuarioLocal;
    finally
    end;
+   Application.MainForm := FrmPrincipal;
+   TSession.ID_USUARIO := DmUsuario.QryUsuario.FieldByName('id_usuario').AsInteger;
    FrmPrincipal.LblMenuNome.text := DmUsuario.QryUsuario.FieldByName('nome').AsString;
    FrmPrincipal.LblMenuEmail.text := DmUsuario.QryUsuario.FieldByName('email').AsString;
-   Application.MainForm := FrmPrincipal;
    FrmPrincipal.Show;
    FrmLogin.Close;
 end;

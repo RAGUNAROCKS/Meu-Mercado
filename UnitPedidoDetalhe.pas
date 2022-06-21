@@ -5,36 +5,42 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox, uLoading,
+  System.JSON, uFunctions;
 
 type
   TFrmPedidoDetalhe = class(TForm)
     LtyEndereco: TLayout;
-    LblNome: TLabel;
-    LblEndereco: TLabel;
+    LblNomeMerc: TLabel;
+    LblEnderecoMerc: TLabel;
     LytToolbar: TLayout;
     LblTitulo: TLabel;
     ImgVoltar: TImage;
     Rectangle1: TRectangle;
     Layout1: TLayout;
     Label1: TLabel;
-    Label2: TLabel;
+    LblSubtotal: TLabel;
     Layout2: TLayout;
     Label3: TLabel;
-    Label4: TLabel;
+    LblTaxa: TLabel;
     Layout3: TLayout;
     Label5: TLabel;
-    Label6: TLabel;
+    LblTotal: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
+    LblEndEntrega: TLabel;
     LtbProdutos: TListBox;
     procedure FormShow(Sender: TObject);
   private
-    procedure AddProduto(id_produto: integer; descricao: string; qtd,
-      valor_unit: double; foto: TStream);
+    Fid_pedido: integer;
+    procedure AddProduto(id_produto: integer;
+                         descricao, url_foto: string;
+                         qtd, valor_unit: double);
     procedure CarregarPedido;
+    procedure ThreadDadosTerminate(Sender: TObject);
+    procedure DownloadFoto(lb: TListBox);
     { Private declarations }
   public
+     property id_pedido: integer read Fid_pedido write Fid_pedido;
     { Public declarations }
   end;
 
@@ -45,12 +51,43 @@ implementation
 
 {$R *.fmx}
 
-uses Frame.ProdutoLista;
+uses Frame.ProdutoLista, DataModule.Usuario;
+
+procedure TFrmPedidoDetalhe.DownloadFoto(lb: TListBox);
+var
+    t: TThread;
+    foto: TBitmap;
+    frame: TFrameProdutLista;
+begin
+    // Carregar imagens...
+    t := TThread.CreateAnonymousThread(procedure
+    var
+        i : integer;
+    begin
+
+        for i := 0 to lb.Items.Count - 1 do
+        begin
+            frame := TFrameProdutLista(lb.ItemByIndex(i).Components[0]);
+
+
+            if frame.ImgProduto.TagString <> '' then
+            begin
+                foto := TBitmap.Create;
+                LoadImageFromURL(foto, frame.ImgProduto.TagString);
+
+                frame.ImgProduto.TagString := '';
+                frame.ImgProduto.bitmap := foto;
+            end;
+        end;
+
+    end);
+
+    t.Start;
+end;
 
 procedure TFrmPedidoDetalhe.AddProduto(id_produto: integer;
-                                 descricao: string;
-                                 qtd, valor_unit: double;
-                                 foto: TStream);
+                                 descricao, url_foto: string;
+                                 qtd, valor_unit: double);
 var
     item: TListBoxItem;
     frame: TFrameProdutLista;
@@ -62,7 +99,7 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutLista.Create(item);
-    //frame.img Produto(
+    frame.ImgProduto.TagString := url_foto;
     frame.LblDescricao.Text := descricao;
     frame.LblQtd.Text := qtd.ToString + ' x ' + FormatFloat('R$ #,##0.00', valor_unit);
     frame.LblValor.Text := FormatFloat('R$ #,##0.00', qtd * valor_unit);
@@ -73,13 +110,60 @@ begin
 end;
 
 procedure TFrmPedidoDetalhe.CarregarPedido;
+var
+  t: TThread;
+  jsonObj: TJsonObject;
+  arrayItem: TJSONArray;
 begin
-    AddProduto(0, 'Café Pilão Torrado E Moído', 2, 15, nil);
-    AddProduto(0, 'Café Pilão Torrado E Moído', 1, 15, nil);
-    AddProduto(0, 'Café Pilão Torrado E Moído', 3, 15, nil);
-    AddProduto(0, 'Café Pilão Torrado E Moído', 5, 15, nil);
-    AddProduto(0, 'Café Pilão Torrado E Moído', 4, 15, nil);
-    AddProduto(0, 'Café Pilão Torrado E Moído', 6, 15, nil);
+  TLoading.Show(FrmPedidoDetalhe, '');
+  LtbProdutos.Items.Clear;
+  t := TThread.CreateAnonymousThread(procedure
+    begin
+      jsonObj := DmUsuario.JsonPedido(id_pedido);
+      TThread.Synchronize(TThread.CurrentThread, procedure
+      var
+        I: integer;
+      begin
+        LblTitulo.Text := 'Pedido #' + jsonObj.GetValue<string>('id_pedido', '');
+        LblNomeMerc.Text := jsonObj.GetValue<string>('nome_mercado', '');
+        LblEnderecoMerc.Text := jsonObj.GetValue<string>('endereco_mercado', '');
+        LblSubtotal.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_subtotal', 0));
+        LblTaxa.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_entrega', 0));
+        LblTotal.Text := FormatFloat('R$ #,##0.00', jsonObj.GetValue<double>('vl_total', 0));
+        LblEndEntrega.Text := jsonObj.GetValue<string>('endereco', '');
+
+        arrayItem := jsonObj.GetValue<TJSONArray>('itens');
+
+        for I := 0 to arrayItem.Size - 1 do
+        begin
+           AddProduto(arrayItem.get(I).GetValue<integer>('id_produto', 0),
+                      arrayItem.get(I).GetValue<string>('descricao', ''),
+                      arrayItem.get(I).GetValue<string>('url_foto', ''),
+                      arrayItem.get(I).GetValue<integer>('qtd', 0),
+                      arrayItem.get(I).GetValue<double>('vl_unitario', 0))
+
+        end;
+
+      end);
+      jsonObj.DisposeOf;
+    end);
+
+  t.OnTerminate := ThreadDadosTerminate;
+  t.Start;
+end;
+
+procedure TFrmPedidoDetalhe.ThreadDadosTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+   DownloadFoto(LtbProdutos);
 end;
 
 procedure TFrmPedidoDetalhe.FormShow(Sender: TObject);
