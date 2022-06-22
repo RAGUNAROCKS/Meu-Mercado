@@ -30,6 +30,7 @@ type
     LblEndEntrega: TLabel;
     LtbProdutos: TListBox;
     procedure FormShow(Sender: TObject);
+    procedure ImgVoltarClick(Sender: TObject);
   private
     Fid_pedido: integer;
     procedure AddProduto(id_produto: integer;
@@ -169,6 +170,11 @@ end;
 procedure TFrmPedidoDetalhe.FormShow(Sender: TObject);
 begin
       CarregarPedido;
+end;
+
+procedure TFrmPedidoDetalhe.ImgVoltarClick(Sender: TObject);
+begin
+  close;
 end;
 
 end.

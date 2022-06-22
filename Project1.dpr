@@ -18,7 +18,8 @@ uses
   DataModule.Mercado in 'DataModule\DataModule.Mercado.pas' {DmMercado: TDataModule},
   uConsts in 'Units\uConsts.pas',
   uFunctions in 'Units\uFunctions.pas',
-  uSession in 'Units\uSession.pas';
+  uSession in 'Units\uSession.pas',
+  UnitPerfil in 'UnitPerfil.pas' {FrmPerfil};
 
 {$R *.res}
 
@@ -27,5 +28,6 @@ begin
   Application.CreateForm(TDmUsuario, DmUsuario);
   Application.CreateForm(TDmMercado, DmMercado);
   Application.CreateForm(TFrmLogin, FrmLogin);
+  Application.CreateForm(TFrmPerfil, FrmPerfil);
   Application.Run;
 end.

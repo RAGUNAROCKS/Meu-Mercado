@@ -19,6 +19,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure LvPedidosItemClick(const Sender: TObject;
       const AItem: TListViewItem);
+    procedure ImgMenuClick(Sender: TObject);
   private
     procedure AddPedidoLv(id_pedido, qtd_itens: integer;
                            nome, endereco, dt_pedido: string;
@@ -111,6 +112,11 @@ end;
 procedure TFrmPedido.FormShow(Sender: TObject);
 begin
   ListarPedidos;
+end;
+
+procedure TFrmPedido.ImgMenuClick(Sender: TObject);
+begin
+  close;
 end;
 
 procedure TFrmPedido.ThreadDadosTerminate(Sender: TObject);

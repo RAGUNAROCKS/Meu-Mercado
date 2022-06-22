@@ -55,6 +55,7 @@ type
     procedure RectMenuLogoutClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure AnimationMenuFinish(Sender: TObject);
+    procedure RectMenuPerfilClick(Sender: TObject);
   private
     FInd_Retira: string;
     FInd_Entrega: string;
@@ -78,7 +79,7 @@ implementation
 {$R *.fmx}
 
 uses UnitCatalogo, UnitCarrinho, UnitPedido, DataModule.Mercado,
-  DataModule.Usuario, UnitLogin;
+  DataModule.Usuario, UnitLogin, UnitPerfil;
 
 procedure TFrmPrincipal.AddMercadoLv(id_mercado: integer;
                                      nome, endereco: string;
@@ -201,6 +202,15 @@ begin
 
     OpenMenu(false);
     FrmPedido.show;
+end;
+
+procedure TFrmPrincipal.RectMenuPerfilClick(Sender: TObject);
+begin
+  if NOT Assigned(FrmPerfil) then
+    Application.CreateForm(TFrmPerfil, FrmPerfil);
+
+  OpenMenu(False);
+  FrmPerfil.Show;
 end;
 
 procedure TFrmPrincipal.LvMercadoItemClick(const Sender: TObject;

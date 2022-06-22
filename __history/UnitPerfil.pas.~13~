@@ -1,0 +1,155 @@
+unit UnitPerfil;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Edit, FMX.TabControl,
+  uLoading, uSession;
+
+type
+  TFrmPerfil = class(TForm)
+    LytToolbar: TLayout;
+    LblTitulo: TLabel;
+    ImgVoltar: TImage;
+    ImgSalvar: TImage;
+    Layout3: TLayout;
+    LytCEP: TLayout;
+    RectCidade: TRectangle;
+    EdtCidade: TEdit;
+    RectUF: TRectangle;
+    EdtUF: TEdit;
+    RectNome: TRectangle;
+    EdtNome: TEdit;
+    RectBairro: TRectangle;
+    EdtBairro: TEdit;
+    RectCEP: TRectangle;
+    EdtCEP: TEdit;
+    RectEndereco: TRectangle;
+    EdtEndereco: TEdit;
+    RectEmail: TRectangle;
+    EdtEmail: TEdit;
+    RectSenha: TRectangle;
+    EdtSenha: TEdit;
+    procedure FormShow(Sender: TObject);
+    procedure ImgSalvarClick(Sender: TObject);
+    procedure ImgVoltarClick(Sender: TObject);
+  private
+    procedure CarregarDados;
+    procedure ThreadDadosTerminate(Sender: TObject);
+    procedure ThreadSalvarTerminate(Sender: TObject);
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmPerfil: TFrmPerfil;
+
+implementation
+
+{$R *.fmx}
+
+uses DataModule.Usuario, UnitPrincipal;
+
+procedure TFrmPerfil.FormShow(Sender: TObject);
+begin
+   CarregarDados;
+end;
+
+procedure TFrmPerfil.ImgSalvarClick(Sender: TObject);
+var
+  t : TThread;
+begin
+  TLoading.Show(FrmPerfil, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     DmUsuario.ListarUsuarioId(TSession.ID_USUARIO);
+
+     with DmUsuario.TabUsuario do
+     begin
+        sleep(2000);
+
+        DmUsuario.EditarUsuario(TSession.ID_USUARIO, EdtNome.Text, EdtEmail.Text, EdtSenha.Text,
+                                EdtEndereco.Text, EdtBairro.Text, EdtCidade.Text, EdtUF.Text,
+                                EdtCEP.Text);
+
+        DmUsuario.SalvarUsuarioLocal(TSession.ID_USUARIO, EdtEmail.Text, EdtNome.Text,
+                                     EdtEndereco.Text, EdtBairro.Text, EdtCidade.Text,
+                                     EdtUF.Text, EdtCEP.Text);
+
+        FrmPrincipal.LblMenuNome.Text := EdtNome.Text;
+        FrmPrincipal.LblMenuEmail.Text := EdtEmail.Text;
+     end;
+  end);
+
+  t.OnTerminate := ThreadSalvarTerminate;
+  t.Start;
+end;
+
+procedure TFrmPerfil.ImgVoltarClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TFrmPerfil.CarregarDados;
+var
+  t : TThread;
+begin
+  TLoading.Show(FrmPerfil, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     DmUsuario.ListarUsuarioId(TSession.ID_USUARIO);
+
+     with DmUsuario.TabUsuario do
+     begin
+        TThread.Synchronize(TThread.CurrentThread, procedure
+        begin
+           EdtNome.Text := fieldbyname('nome').asstring;
+           EdtEmail.Text := fieldbyname('email').asstring;
+           EdtSenha.Text := fieldbyname('senha').asstring;
+           EdtEndereco.Text := fieldbyname('endereco').asstring;
+           EdtBairro.Text := fieldbyname('bairro').asstring;
+           EdtCidade.Text := fieldbyname('cidade').asstring;;
+           EdtUF.Text := fieldbyname('uf').asstring;;
+           EdtCEP.Text := fieldbyname('cep').asstring;;
+        end);
+     end;
+  end);
+
+  t.OnTerminate := ThreadDadosTerminate;
+  t.Start;
+end;
+
+procedure TFrmPerfil.ThreadDadosTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+end;
+
+procedure TFrmPerfil.ThreadSalvarTerminate(Sender: TObject);
+begin
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   close;
+end;
+
+end.

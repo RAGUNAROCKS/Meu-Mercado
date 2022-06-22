@@ -24,6 +24,7 @@ type
     procedure connBeforeConnect(Sender: TObject);
     procedure connAfterConnect(Sender: TObject);
   private
+
     { Private declarations }
   public
     procedure Login(email, senha: string);
@@ -35,6 +36,9 @@ type
     procedure ListarUsuarioLocal;
     procedure Logout;
     procedure ListarPedido(id_usuario: integer);
+    procedure ListarUsuarioId(id_usuario: integer);
+    procedure EditarUsuario(id_usuario: integer; nome, email, senha, endereco,
+                            bairro, cidade, uf, cep: string);
     function JsonPedido(id_pedido: integer): TJsonObject;
     { Public declarations }
   end;
@@ -125,12 +129,12 @@ begin
      json.AddPair('uf', uf);
      json.AddPair('cep', cep);
 
-     resp := TRequest.New.BaseURL('http://localhost:3000')
+     resp := TRequest.New.BaseURL(BASE_URL)
              .Resource('usuarios/cadastro')
              .DataSetAdapter(TabUsuario)
              .AddBody(json.ToJSON)
              .Accept('application/json')
-             .BasicAuthentication('99coders', '123456').Post;
+             .BasicAuthentication(USER_NAME, PASSWORD).Post;
 
      if (resp.StatusCode = 401) then
       raise Exception.Create('Usuario não autorizado!')
@@ -147,12 +151,12 @@ var
   resp: Iresponse;
   json: TJSONObject;
 begin
-     resp := TRequest.New.BaseURL('http://localhost:3000')
+     resp := TRequest.New.BaseURL(BASE_URL)
              .Resource('pedidos')
              .AddParam('id_usuario', id_usuario.ToString)
              .DataSetAdapter(TabPedido)
              .Accept('application/json')
-             .BasicAuthentication('99coders', '123456').Get;
+             .BasicAuthentication(USER_NAME, PASSWORD).Get;
 
      if (resp.StatusCode <> 200) then
       raise Exception.Create(resp.Content);
@@ -163,11 +167,11 @@ var
   resp: Iresponse;
   json: TJSONObject;
 begin
-     resp := TRequest.New.BaseURL('http://localhost:3000')
+     resp := TRequest.New.BaseURL(BASE_URL)
              .Resource('pedidos')
              .ResourceSuffix(id_pedido.ToString)
              .Accept('application/json')
-             .BasicAuthentication('99coders', '123456').Get;
+             .BasicAuthentication(USER_NAME, PASSWORD).Get;
 
      if (resp.StatusCode <> 200) then
       raise Exception.Create(resp.Content)
@@ -232,6 +236,57 @@ begin
     SQL.Add('DELETE FROM TAB_CARRINHO_ITEM');
     ExecSQl;
   end;
+end;
+
+procedure TDmUsuario.ListarUsuarioId(id_usuario: integer);
+var
+  resp: Iresponse;
+begin
+     TabUsuario.FieldDefs.Clear;
+
+     resp := TRequest.New.BaseURL(BASE_URL)
+             .Resource('usuarios')
+             .ResourceSuffix(id_usuario.ToString)
+             .DataSetAdapter(TabUsuario)
+             .Accept('application/json')
+             .BasicAuthentication(USER_NAME, PASSWORD).Get;
+
+     if (resp.StatusCode <> 200) then
+      raise Exception.Create(resp.Content);
+end;
+
+procedure TDmUsuario.EditarUsuario(id_usuario: integer;
+                                   nome, email, senha, endereco,
+                                   bairro, cidade, uf, cep: string);
+var
+  resp: Iresponse;
+  json: TJSONObject;
+begin
+  try
+     json := TJSONObject.Create;
+     json.AddPair('nome', nome);
+     json.AddPair('email', email);
+     json.AddPair('senha', senha);
+     json.AddPair('endereco', endereco);
+     json.AddPair('bairro', bairro);
+     json.AddPair('cidade', cidade);
+     json.AddPair('uf', uf);
+     json.AddPair('cep', cep);
+
+     resp := TRequest.New.BaseURL(BASE_URL)
+             .Resource('usuarios')
+             .ResourceSuffix(id_usuario.ToString)
+             .DataSetAdapter(TabUsuario)
+             .AddBody(json.ToJSON)
+             .Accept('application/json')
+             .BasicAuthentication(USER_NAME, PASSWORD).Put;
+
+     if (resp.StatusCode <> 200) then
+      raise Exception.Create(resp.Content);
+  finally
+     json.DisposeOf;
+  end;
+     
 end;
 
 end.

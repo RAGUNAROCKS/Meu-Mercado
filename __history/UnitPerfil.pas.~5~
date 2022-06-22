@@ -1,0 +1,106 @@
+unit UnitPerfil;
+
+interface
+
+uses
+  System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
+  FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Edit, FMX.TabControl,
+  uLoading, uSession;
+
+type
+  TFrmPerfil = class(TForm)
+    LytToolbar: TLayout;
+    LblTitulo: TLabel;
+    ImgVoltar: TImage;
+    ImgSalvar: TImage;
+    Layout3: TLayout;
+    LytCEP: TLayout;
+    RectCidade: TRectangle;
+    EdtCidade: TEdit;
+    RectUF: TRectangle;
+    EdtUF: TEdit;
+    RectNome: TRectangle;
+    EdtNome: TEdit;
+    RectBairro: TRectangle;
+    EdtBairro: TEdit;
+    RectCEP: TRectangle;
+    EdtCEP: TEdit;
+    RectEndereco: TRectangle;
+    EdtEndereco: TEdit;
+    RectEmail: TRectangle;
+    EdtEmail: TEdit;
+    RectSenha: TRectangle;
+    EdtSenha: TEdit;
+    procedure FormShow(Sender: TObject);
+  private
+    procedure CarregarDados;
+    procedure ThreadDadosTerminate(Sender: TObject);
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FrmPerfil: TFrmPerfil;
+
+implementation
+
+{$R *.fmx}
+
+uses DataModule.Usuario;
+
+procedure TFrmPerfil.FormShow(Sender: TObject);
+begin
+   CarregarDados;
+end;
+
+procedure TFrmPerfil.CarregarDados;
+var
+  t : TThread;
+begin
+  TLoading.Show(FrmPerfil, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     //Listar dados do mercado...
+     DmUsuario.ListarUsuarioId(TSession.ID_USUARIO);
+
+     with DmUsuario.TabUsuario do
+     begin
+        TThread.Synchronize(TThread.CurrentThread, procedure
+        begin
+           EdtNome.Text := fieldbyname('nome').asstring;
+           LblEndereco.Text := fieldbyname('endereco').asstring;
+           LblTaxa.Text := 'Entrega: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_entrega').asfloat);
+           LblTaxa.TagFloat := fieldbyname('vl_entrega').asfloat;
+           LblPreco.Text := 'Compra Mínima: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_compra_min').asfloat);
+        end);
+     end;
+
+     //Listar as categorias...
+     ListarCategorias;
+  end);
+
+  t.OnTerminate := ThreadDadosTerminate;
+  t.Start;
+end;
+
+procedure TFrmPerfil.ThreadDadosTerminate(Sender: TObject);
+begin
+   LblTitulo.Opacity := 1;
+   LtyEndereco.Opacity := 1;
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+
+   ListarProdutos(LtbCategoria.Tag, EdtBusca.Text);
+end;
+
+end.
