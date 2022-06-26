@@ -753,7 +753,6 @@ object FrmPerfil: TFrmPerfil
       Size.Height = 40.000000000000000000
       Size.PlatformDefault = False
       Stroke.Color = xFF8F8F8F
-      Visible = False
       XRadius = 6.000000000000000000
       YRadius = 6.000000000000000000
       object EdtSenha: TEdit
@@ -790,7 +789,7 @@ object FrmPerfil: TFrmPerfil
     Size.PlatformDefault = False
     StyleLookup = 'btnGreen'
     TabOrder = 1
-    Text = 'Alterar Senha'
+    Text = 'Acessar'
     OnClick = BtnSenhaClick
   end
 end

@@ -33,9 +33,12 @@ type
     RectSenha: TRectangle;
     EdtSenha: TEdit;
     procedure FormShow(Sender: TObject);
+    procedure ImgSalvarClick(Sender: TObject);
+    procedure ImgVoltarClick(Sender: TObject);
   private
     procedure CarregarDados;
     procedure ThreadDadosTerminate(Sender: TObject);
+    procedure ThreadSalvarTerminate(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }
@@ -48,11 +51,45 @@ implementation
 
 {$R *.fmx}
 
-uses DataModule.Usuario;
+uses DataModule.Usuario, UnitPrincipal;
 
 procedure TFrmPerfil.FormShow(Sender: TObject);
 begin
    CarregarDados;
+end;
+
+procedure TFrmPerfil.ImgSalvarClick(Sender: TObject);
+var
+  t : TThread;
+begin
+  TLoading.Show(FrmPerfil, '');
+  t := TThread.CreateAnonymousThread(procedure
+  begin
+     DmUsuario.ListarUsuarioId(TSession.ID_USUARIO);
+
+     with DmUsuario.TabUsuario do
+     begin
+
+        DmUsuario.EditarUsuario(TSession.ID_USUARIO, EdtNome.Text, EdtEmail.Text, EdtSenha.Text,
+                                EdtEndereco.Text, EdtBairro.Text, EdtCidade.Text, EdtUF.Text,
+                                EdtCEP.Text);
+
+        DmUsuario.SalvarUsuarioLocal(TSession.ID_USUARIO, EdtEmail.Text, EdtNome.Text,
+                                     EdtEndereco.Text, EdtBairro.Text, EdtCidade.Text,
+                                     EdtUF.Text, EdtCEP.Text);
+
+        FrmPrincipal.LblMenuNome.Text := EdtNome.Text;
+        FrmPrincipal.LblMenuEmail.Text := EdtEmail.Text;
+     end;
+  end);
+
+  t.OnTerminate := ThreadSalvarTerminate;
+  t.Start;
+end;
+
+procedure TFrmPerfil.ImgVoltarClick(Sender: TObject);
+begin
+  close;
 end;
 
 procedure TFrmPerfil.CarregarDados;
@@ -62,7 +99,6 @@ begin
   TLoading.Show(FrmPerfil, '');
   t := TThread.CreateAnonymousThread(procedure
   begin
-     //Listar dados do mercado...
      DmUsuario.ListarUsuarioId(TSession.ID_USUARIO);
 
      with DmUsuario.TabUsuario do
@@ -70,15 +106,15 @@ begin
         TThread.Synchronize(TThread.CurrentThread, procedure
         begin
            EdtNome.Text := fieldbyname('nome').asstring;
-           LblEndereco.Text := fieldbyname('endereco').asstring;
-           LblTaxa.Text := 'Entrega: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_entrega').asfloat);
-           LblTaxa.TagFloat := fieldbyname('vl_entrega').asfloat;
-           LblPreco.Text := 'Compra Mínima: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_compra_min').asfloat);
+           EdtEmail.Text := fieldbyname('email').asstring;
+           EdtSenha.Text := fieldbyname('senha').asstring;
+           EdtEndereco.Text := fieldbyname('endereco').asstring;
+           EdtBairro.Text := fieldbyname('bairro').asstring;
+           EdtCidade.Text := fieldbyname('cidade').asstring;;
+           EdtUF.Text := fieldbyname('uf').asstring;;
+           EdtCEP.Text := fieldbyname('cep').asstring;;
         end);
      end;
-
-     //Listar as categorias...
-     ListarCategorias;
   end);
 
   t.OnTerminate := ThreadDadosTerminate;
@@ -87,8 +123,20 @@ end;
 
 procedure TFrmPerfil.ThreadDadosTerminate(Sender: TObject);
 begin
-   LblTitulo.Opacity := 1;
-   LtyEndereco.Opacity := 1;
+   TLoading.Hide;
+
+   if Sender is TThread then
+   begin
+     if Assigned(TThread(Sender).FatalException) then
+     begin
+      showmessage(Exception(TThread(Sender).FatalException).Message);
+      exit;
+     end;
+   end;
+end;
+
+procedure TFrmPerfil.ThreadSalvarTerminate(Sender: TObject);
+begin
    TLoading.Hide;
 
    if Sender is TThread then
@@ -100,7 +148,7 @@ begin
      end;
    end;
 
-   ListarProdutos(LtbCategoria.Tag, EdtBusca.Text);
+   close;
 end;
 
 end.

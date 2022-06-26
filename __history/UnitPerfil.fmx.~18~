@@ -790,7 +790,7 @@ object FrmPerfil: TFrmPerfil
     Size.PlatformDefault = False
     StyleLookup = 'btnGreen'
     TabOrder = 1
-    Text = 'Alterar Senha'
+    Text = 'Acessar'
     OnClick = BtnSenhaClick
   end
 end

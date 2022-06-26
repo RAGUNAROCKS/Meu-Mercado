@@ -97,16 +97,9 @@ end;
 procedure TFrmPerfil.BtnSenhaClick(Sender: TObject);
 begin
     if RectSenha.Visible = false then
-    begin
-      RectSenha.Visible := true;
-      BtnSenha.Text := 'Ocultar Senha';
-    end
+      RectSenha.Visible := true
     else
-    begin
       RectSenha.Visible := false;
-      BtnSenha.Text := 'Alterar Senha';
-    end;
-
 end;
 
 procedure TFrmPerfil.CarregarDados;
