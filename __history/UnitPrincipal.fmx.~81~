@@ -27,7 +27,7 @@ object FrmPrincipal: TFrmPrincipal
       Size.PlatformDefault = False
       TextSettings.Font.Size = 18.000000000000000000
       TextSettings.HorzAlign = Center
-      Text = 'Mercados Dispon'#237'veis'
+      Text = 'Selecione o mercado...'
       TabOrder = 2
     end
     object ImgMenu: TImage

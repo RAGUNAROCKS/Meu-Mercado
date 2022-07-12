@@ -30,7 +30,7 @@ object FrameProdutCard: TFrameProdutCard
     Size.Width = 140.000000000000000000
     Size.Height = 15.000000000000000000
     Size.PlatformDefault = False
-    TextSettings.FontColor = xFF0570BB
+    TextSettings.FontColor = xFF64BA01
     TextSettings.HorzAlign = Center
     Text = 'R$ 15,00'
     TabOrder = 1

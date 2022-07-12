@@ -204,7 +204,7 @@ procedure TFrmCatalogo.SelecionarCategoria(item: TListBoxItem);
 
     //Ajusta somente o item selecionado...
     rect := TRectangle(item.Components[0]);
-    rect.Fill.Color := $FF64BA01;
+    rect.Fill.Color := $FF0570BB;
 
     lbl := TLabel(rect.Components[0]);
     lbl.FontColor := $FFFFFFFF;

@@ -453,7 +453,7 @@ object FrameProdutLista: TFrameProdutLista
     Size.Width = 70.000000000000000000
     Size.Height = 64.000000000000000000
     Size.PlatformDefault = False
-    TextSettings.FontColor = xFF0570BB
+    TextSettings.FontColor = xFF64BA01
     TextSettings.HorzAlign = Trailing
     TextSettings.VertAlign = Leading
     Text = 'R$ 30,00'

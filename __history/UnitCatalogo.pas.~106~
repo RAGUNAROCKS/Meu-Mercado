@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.Edit, FMX.ListBox,
-  uLoading, System.Net.HttpClientComponent, System.Net.HttpClient;
+  uLoading, System.Net.HttpClientComponent, System.Net.HttpClient, uFunctions;
 
 type
   TFrmCatalogo = class(TForm)
@@ -40,6 +40,7 @@ type
       const Item: TListBoxItem);
     procedure BtnBuscaClick(Sender: TObject);
     procedure ImgVoltarClick(Sender: TObject);
+    procedure ImgCarrinhoClick(Sender: TObject);
   private
     FId_Mercado: integer;
     procedure AddProduto(id_produto: integer;
@@ -66,7 +67,8 @@ implementation
 
 {$R *.fmx}
 
-uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado;
+uses UnitPrincipal, Frame.ProdutoCard, UnitProduto, DataModule.Mercado,
+  UnitCarrinho;
 
 procedure TFrmCatalogo.DownloadFoto(lb: TListBox);
 var
@@ -114,7 +116,6 @@ begin
     item.Tag := id_produto;
 
     frame := TFrameProdutCard.Create(item);
-    //frame.img Produto(
     frame.LblDescricao.Text := descricao;
     frame.LblPreco.Text := FormatFloat('R$ #,##0.00', valor);
     frame.LblUnidade.Text := unidade;
@@ -174,6 +175,10 @@ begin
     if NOT assigned(FrmProduto) then
       application.CreateForm(TFrmProduto, FrmProduto);
 
+      FrmProduto.Nome_mercado := LblTitulo.Text;
+      FrmProduto.Endereco := LblEndereco.Text;
+      FrmProduto.Taxa_entrega := lblTaxa.TagFloat;
+      FrmProduto.Id_mercado := FrmCatalogo.Id_mercado;
       FrmProduto.Id_produto := Item.Tag;
       FrmProduto.Show;
 end;
@@ -280,6 +285,14 @@ begin
    CarregarDados;
 end;
 
+procedure TFrmCatalogo.ImgCarrinhoClick(Sender: TObject);
+begin
+    if NOT Assigned(FrmCarrinho) then
+      Application.CreateForm(TFrmCarrinho, FrmCarrinho);
+
+      FrmCarrinho.Show;
+end;
+
 procedure TFrmCatalogo.ImgVoltarClick(Sender: TObject);
 begin
    close;
@@ -306,6 +319,7 @@ begin
            LblTitulo.Text := fieldbyname('nome').asstring;
            LblEndereco.Text := fieldbyname('endereco').asstring;
            LblTaxa.Text := 'Entrega: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_entrega').asfloat);
+           LblTaxa.TagFloat := fieldbyname('vl_entrega').asfloat;
            LblPreco.Text := 'Compra Mínima: ' + FormatFloat('R$#,##0.00',fieldbyname('vl_compra_min').asfloat);
         end);
      end;
